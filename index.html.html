@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Family OS — ผู้ช่วยดูแลเรื่องสำคัญของครอบครัว</title>
+<meta name="description" content="รวมเรื่องสำคัญของครอบครัวไว้ที่เดียว นัดหมอ วันเกิด เอกสารหมดอายุ ค่าใช้จ่าย พร้อมเตือนก่อนถึงกำหนด ข้อมูลเก็บในเครื่องคุณเท่านั้น ใช้ฟรี ไม่ต้องสมัคร">
+<meta name="theme-color" content="#FF9A56">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Family OS">
+<meta property="og:title" content="Family OS — ผู้ช่วยดูแลเรื่องสำคัญของครอบครัว">
+<meta property="og:description" content="ไม่ลืมนัดหมอ วันเกิด เอกสารหมดอายุ ค่าใช้จ่าย — ข้อมูลอยู่ในเครื่องคุณเท่านั้น">
+<meta property="og:type" content="website">
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Anuphan:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --cream:#FFF7EE; --cream2:#FFF1E2; --white:#FFFFFF;
+ --orange:#F5A04A; --orange-d:#E5873A; --peach:#FFD9B8; --yellow:#FFCB6B;
+ --green:#5CBE86; --green-l:#E6F6ED; --brown:#8A6647; --brown-l:#C9A889;
+ --ink:#4A3728; --muted:#96806D; --line:#F2E3D2;
+ --red:#E4604A; --red-l:#FDEEEA; --blue:#5E9AD8; --blue-l:#EAF2FB;
+ --amber:#E8A13A; --amber-l:#FFF4E1;
+ --sh:0 4px 18px rgba(154,116,74,.10);
+ --sh2:0 12px 34px rgba(154,116,74,.16);
+ --r:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+html{overscroll-behavior-y:none}
+body{overscroll-behavior-y:none}
+body{
+ font-family:'Anuphan',system-ui,-apple-system,sans-serif;color:var(--ink);
+ background:
+  radial-gradient(920px 440px at 6% -8%,#FFE3C4 0%,transparent 64%),
+  radial-gradient(840px 420px at 98% 0%,#FFEFD2 0%,transparent 62%),
+  radial-gradient(780px 440px at 50% 106%,#EDF7EC 0%,transparent 60%),
+  var(--cream);
+ -webkit-font-smoothing:antialiased;
+ padding-top:env(safe-area-inset-top);
+ min-height:100vh;
+}
+h1,h2,h3,h4,.mitr{font-family:'Mitr','Noto Sans Thai',system-ui,sans-serif;font-weight:500}
+/* ตัวเลขใช้ฟอนต์ระบบเสมอ กันเครื่องบางรุ่นเรนเดอร์เลขศูนย์เป็นสัญลักษณ์ */
+.num{font-family:system-ui,-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+ font-weight:700;font-variant-numeric:tabular-nums;font-variant-emoji:text}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+.hide{display:none !important}
+
+/* ---------- layout ---------- */
+.app{display:flex;min-height:100vh}
+.side{display:none}
+.main{flex:1;min-width:0;padding:0 16px 108px;max-width:1180px;margin:0 auto;width:100%}
+@media(min-width:960px){
+ .app{gap:0}
+ .side{display:flex;flex-direction:column;gap:6px;width:236px;flex-shrink:0;padding:22px 14px;
+  background:rgba(255,255,255,.72);border-right:1px solid var(--line);position:sticky;top:0;height:100vh}
+ .main{padding:0 28px 60px}
+ .bottomnav{display:none !important}
+}
+.sidelogo{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:0 8px}
+.sidelogo img{width:40px;height:40px;border-radius:12px}
+.sidelogo b{font-family:'Mitr',sans-serif;font-size:17px;display:block;line-height:1.1}
+.sidelogo small{font-size:11px;color:var(--muted)}
+.navbtn{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;font-size:14.5px;color:var(--muted);transition:.15s;text-align:left;width:100%}
+.navbtn span.i{font-size:18px;width:22px;text-align:center}
+.navbtn:hover{background:var(--cream2);color:var(--ink)}
+.navbtn.on{background:linear-gradient(96deg,var(--orange),var(--yellow));color:#fff;font-weight:600;box-shadow:0 8px 20px rgba(255,154,86,.32)}
+
+/* ---------- header ---------- */
+.topbar{padding:22px 0 8px;display:flex;align-items:flex-start;gap:12px}
+.topbar .grow{flex:1;min-width:0}
+.hello{font-size:13px;color:var(--muted)}
+.topbar h1{font-size:25px;line-height:1.2;margin-top:2px}
+.icobtn{width:44px;height:44px;border-radius:14px;background:var(--white);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;font-size:19px;position:relative;flex-shrink:0}
+.dotbadge{position:absolute;top:8px;right:9px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid #fff}
+
+.avatars{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 4px}
+.av{width:48px;border-radius:16px;text-align:center;padding:7px 3px 6px;background:var(--white);box-shadow:var(--sh);transition:.15s}
+.av:hover{transform:translateY(-2px)}
+.av .em{font-size:20px;line-height:1}
+.av .nm{font-size:10px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.av.add{border:2px dashed var(--peach);background:transparent;box-shadow:none;color:var(--orange)}
+
+/* ---------- cards ---------- */
+.sec{margin-top:26px}
+.sec-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.sec-h h2{font-size:16px}
+.sec-h button{font-size:13px;color:var(--orange);font-weight:600}
+.card{background:var(--white);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
+.grid4{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:700px){.grid4{grid-template-columns:repeat(4,1fr)}}
+.stat{border-radius:20px;padding:15px;box-shadow:var(--sh);transition:.15s;text-align:left}
+.stat:active{transform:scale(.98)}
+.stat .em{font-size:19px;width:38px;height:38px;border-radius:13px;background:rgba(255,255,255,.72);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(154,116,74,.10)}
+.stat .n{font-size:26px;line-height:1.1;margin-top:5px}
+.stat .l{font-size:11.5px;opacity:.85;margin-top:1px}
+.s-ok{background:var(--green-l);color:#2C7A52}
+.s-warn{background:var(--amber-l);color:#9A6208}
+.s-due{background:var(--red-l);color:#B23A26}
+.s-love{background:#FFEDF2;color:#B8436B}
+
+.qa{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+@media(min-width:560px){.qa{grid-template-columns:repeat(4,1fr)}}
+.qbtn{background:var(--white);border-radius:16px;padding:13px 10px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:6px;align-items:flex-start;transition:.15s}
+.qbtn:hover{transform:translateY(-2px);box-shadow:var(--sh2)}
+.qbtn .em{font-size:20px}
+.qbtn .t{font-size:12.5px;font-weight:600;line-height:1.3}
+
+/* ---------- item rows ---------- */
+.itemlist{display:flex;flex-direction:column;gap:9px}
+.item{background:var(--white);border-radius:17px;padding:13px 14px;box-shadow:var(--sh);display:flex;gap:11px;align-items:flex-start;position:relative;overflow:hidden;transition:.15s}
+.item:hover{box-shadow:var(--sh2)}
+.item .bar{position:absolute;left:0;top:0;bottom:0;width:5px}
+.item .em{font-size:19px;flex-shrink:0;margin-left:3px}
+.item .body{flex:1;min-width:0}
+.item .ti{font-size:14.5px;font-weight:600;line-height:1.35}
+.item.done .ti{text-decoration:line-through;opacity:.5}
+.item .me{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.item .right{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.pill{font-size:10.5px;padding:3px 9px;border-radius:99px;font-weight:600;white-space:nowrap}
+.p-today{background:var(--red-l);color:var(--red)}
+.p-tmr{background:var(--amber-l);color:var(--amber)}
+.p-7{background:#FFF0E4;color:#D97B2E}
+.p-30{background:var(--blue-l);color:var(--blue)}
+.p-over{background:#EEE9E4;color:#6D5B4E}
+.p-ok{background:var(--green-l);color:#2C7A52}
+.chk{width:30px;height:30px;border-radius:10px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent;flex-shrink:0;background:#fff;transition:.15s}
+.chk.on{background:var(--green);border-color:var(--green);color:#fff}
+.tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.tag{font-size:10.5px;background:var(--cream2);color:var(--muted);padding:2px 8px;border-radius:99px}
+
+.empty{text-align:center;padding:30px 18px;color:var(--muted);font-size:13.5px;line-height:1.7}
+.empty .em{font-size:34px;display:block;margin-bottom:8px}
+
+/* ---------- calendar ---------- */
+.calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.calhead b{font-family:'Mitr',sans-serif;font-size:16px}
+.calnav{width:36px;height:36px;border-radius:12px;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:16px}
+.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cdow{text-align:center;font-size:11px;color:var(--muted);padding:4px 0;font-weight:600}
+.cday{aspect-ratio:1;font-variant-emoji:text;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:13.5px;background:var(--cream2);transition:.15s;position:relative}
+.cday.out{opacity:.32}
+.cday.today{outline:2px solid var(--orange);font-weight:700}
+.cday.sel{background:linear-gradient(140deg,var(--orange),var(--yellow));color:#fff;font-weight:700}
+.cday .dots{display:flex;gap:2.5px}
+.cday i{width:5px;height:5px;border-radius:50%;display:block}
+
+/* ---------- finance ---------- */
+.fin3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.fin{border-radius:17px;padding:13px;box-shadow:var(--sh);background:var(--white)}
+.fin .l{font-size:11px;color:var(--muted)}
+.fin .v{font-size:17px;margin-top:3px}
+
+/* ---------- forms / modal ---------- */
+.modal{position:fixed;inset:0;background:rgba(62,46,35,.5);z-index:80;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+.sheet{background:var(--white);border-radius:26px 26px 0 0;width:100%;max-width:560px;max-height:92vh;overflow:auto;padding:8px 18px calc(24px + env(safe-area-inset-bottom));animation:up .22s ease}
+@keyframes up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}
+@media(min-width:600px){.modal{align-items:center;padding:24px}.sheet{border-radius:24px;animation:none}}
+.grab{width:44px;height:5px;border-radius:99px;background:var(--line);margin:8px auto 14px}
+.sheet h3{font-size:18px;margin-bottom:4px}
+.sheet .sub{font-size:12.5px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.f{margin-bottom:13px}
+.f label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+.f input,.f select,.f textarea{width:100%;padding:13px 14px;border:2px solid var(--line);border-radius:15px;background:#FFFDFA}
+.f textarea{min-height:76px;resize:vertical;line-height:1.6}
+.f input:focus,.f select:focus,.f textarea:focus{outline:0;border-color:var(--orange);background:#fff}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:9px 13px;border-radius:99px;background:var(--cream2);font-size:13px;transition:.15s;border:2px solid transparent}
+.chip.on{background:linear-gradient(96deg,var(--orange),var(--yellow));color:#fff;font-weight:600}
+.chip.sm{padding:7px 12px;font-size:12.5px}
+.btn{width:100%;padding:15px;border-radius:17px;font-family:'Mitr',sans-serif;font-size:15.5px;
+ background:linear-gradient(96deg,var(--orange),var(--yellow));color:#fff;box-shadow:0 8px 22px rgba(245,160,74,.34);transition:.15s}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:var(--cream2);color:var(--muted);box-shadow:none}
+.btn.danger{background:var(--red-l);color:var(--red);box-shadow:none}
+.btn.sm{padding:11px;font-size:14px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.note{font-size:12px;color:#8A6B2E;background:#FFF6E6;border-radius:14px;padding:12px 14px;line-height:1.7;margin-top:12px}
+.note.warn{color:#B23A26;background:var(--red-l)}
+.note.safe{color:#2C7A52;background:var(--green-l)}
+
+/* ---------- bottom nav ---------- */
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:space-around;
+ background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+ padding:8px 4px calc(8px + env(safe-area-inset-bottom))}
+.bn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 2px;border-radius:14px;color:var(--muted);font-size:10.5px}
+.bn .i{font-size:19px}
+.bn.on{color:var(--orange);font-weight:700}
+.fab{position:fixed;right:18px;bottom:calc(78px + env(safe-area-inset-bottom));z-index:61;width:58px;height:58px;border-radius:20px;
+ background:linear-gradient(140deg,var(--orange),var(--yellow));color:#fff;font-size:28px;line-height:1;
+ box-shadow:0 12px 30px rgba(255,154,86,.45);display:flex;align-items:center;justify-content:center}
+@media(min-width:960px){.fab{bottom:28px;right:28px}}
+
+/* ---------- toast / in-app notify ---------- */
+.toastwrap{position:fixed;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));z-index:99;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--white);border-radius:16px;padding:13px 15px;box-shadow:var(--sh2);display:flex;gap:11px;align-items:flex-start;
+ animation:down .25s ease;max-width:520px;margin:0 auto;width:100%;pointer-events:auto}
+@keyframes down{from{transform:translateY(-14px);opacity:0}to{transform:none;opacity:1}}
+.toast .em{font-size:19px}
+.toast b{display:block;font-size:13.5px;font-family:'Mitr',sans-serif;font-weight:500}
+.toast small{font-size:12px;color:var(--muted);line-height:1.5}
+
+.lock{position:fixed;inset:0;background:var(--cream);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px}
+.lock img{width:74px;height:74px;border-radius:22px;box-shadow:var(--sh2)}
+.pinrow{display:flex;gap:9px}
+.pindot{width:15px;height:15px;border-radius:50%;background:var(--line)}
+.pindot.on{background:var(--orange)}
+.keys{display:grid;grid-template-columns:repeat(3,72px);gap:11px;margin-top:6px}
+.key{height:60px;border-radius:19px;background:var(--white);box-shadow:var(--sh);font-family:'Mitr',sans-serif;font-size:21px}
+</style>
+</head>
+<body>
+
+<div class="toastwrap" id="toasts"></div>
+
+<div class="app">
+ <aside class="side" id="side"></aside>
+ <main class="main" id="main"></main>
+</div>
+
+<button class="fab" id="fab" aria-label="เพิ่มรายการ">＋</button>
+<nav class="bottomnav" id="bnav"></nav>
+<div id="modalRoot"></div>
+<div id="lockRoot"></div>
+
+<script>
+/* ══════════════════════════════════════════
+   Family OS — ข้อมูลทั้งหมดเก็บในเครื่องผู้ใช้
+   ══════════════════════════════════════════ */
+const KEY='familyos:v1';
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+
+/* ---------- วันที่ ---------- */
+const pad=n=>String(n).padStart(2,'0');
+const toISO=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today=()=>toISO(new Date());
+const parseD=s=>{const[a,b,c]=(s||'').split('-').map(Number);return new Date(a,(b||1)-1,c||1);};
+const diffDays=(iso)=>{
+ if(!iso)return null;
+ const a=parseD(today()),b=parseD(iso);
+ return Math.round((b-a)/86400000);
+};
+const TH_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const TH_MFULL=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const TH_DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const fmtD=iso=>{if(!iso)return '';const d=parseD(iso);return `${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`;};
+const money=n=>Number(n||0).toLocaleString('th-TH',{maximumFractionDigits:2});
+
+/* ---------- หมวดหมู่ ---------- */
+const CATS={
+ health:{em:'🩺',name:'สุขภาพ / นัดหมอ',color:'#5FBF8A'},
+ birthday:{em:'🎂',name:'วันเกิด / วันสำคัญ',color:'#E8739B'},
+ school:{em:'🎒',name:'โรงเรียน / การเรียน',color:'#5B93D6'},
+ doc:{em:'📄',name:'เอกสาร / ต่ออายุ',color:'#8C6A4A'},
+ money:{em:'💰',name:'ค่าใช้จ่าย / การเงิน',color:'#E89A2B'},
+ car:{em:'🚗',name:'รถ / ประกัน',color:'#7A7FD6'},
+ home:{em:'🏠',name:'บ้าน / งานบ้าน',color:'#D68A5B'},
+ love:{em:'❤️',name:'เรื่องของคนที่เรารัก',color:'#E0553F'},
+ other:{em:'📌',name:'อื่น ๆ',color:'#8B7566'},
+};
+const RELATIONS=['พ่อ','แม่','ลูก','สามี','ภรรยา','ปู่','ย่า','ตา','ยาย','พี่','น้อง','อื่น ๆ'];
+const AVATARS=['👨','👩','👦','👧','👴','👵','🧑','👶','🧔','👱‍♀️','🐶','🐱'];
+const REPEATS={none:'ไม่ทำซ้ำ',daily:'ทุกวัน',weekly:'ทุกสัปดาห์',monthly:'ทุกเดือน',yearly:'ทุกปี'};
+const PRIOS={normal:'ปกติ',high:'สำคัญ',critical:'สำคัญมาก'};
+
+/* ---------- state ---------- */
+let S={members:[],items:[],settings:{familyName:'',me:'',pin:'',notify:false,onboarded:false},v:1};
+let view='home', selDay=today(), calCursor=new Date(), notified={}, lastView='';
+
+function load(){
+ try{const raw=localStorage.getItem(KEY);if(raw){const d=JSON.parse(raw);if(d&&d.items)S=Object.assign(S,d);}}
+ catch(e){console.warn('load failed',e);}
+ if(!S.settings)S.settings={};
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(S));}
+ catch(e){toast('⚠️','บันทึกไม่สำเร็จ','พื้นที่เก็บข้อมูลอาจเต็ม ลองสำรองข้อมูลแล้วลบรายการเก่า');}
+}
+const uid=p=>p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+/* ---------- สถานะกำหนดเวลา ---------- */
+function statusOf(it){
+ if(it.done)return{k:'done',cls:'p-ok',label:'เสร็จแล้ว',order:9,color:'#5FBF8A'};
+ const d=diffDays(it.due);
+ if(d===null)return{k:'none',cls:'p-30',label:'ไม่มีกำหนด',order:8,color:'#C9A889'};
+ if(d<0)return{k:'over',cls:'p-over',label:`เลยกำหนดแล้ว ${Math.abs(d)} วัน`,order:0,color:'#6D5B4E'};
+ if(d===0)return{k:'today',cls:'p-today',label:'ครบกำหนดวันนี้',order:1,color:'#E0553F'};
+ if(d===1)return{k:'tmr',cls:'p-tmr',label:'พรุ่งนี้',order:2,color:'#E89A2B'};
+ if(d<=7)return{k:'w',cls:'p-7',label:`อีก ${d} วัน`,order:3,color:'#D97B2E'};
+ if(d<=30)return{k:'m',cls:'p-30',label:`อีก ${d} วัน`,order:4,color:'#5B93D6'};
+ return{k:'far',cls:'p-30',label:`อีก ${d} วัน`,order:5,color:'#A9BED4'};
+}
+const memberOf=id=>S.members.find(m=>m.id===id);
+const activeItems=()=>S.items.filter(i=>!i.done);
+function sortItems(list){
+ return [...list].sort((a,b)=>{
+  const sa=statusOf(a),sb=statusOf(b);
+  if(sa.order!==sb.order)return sa.order-sb.order;
+  return (a.due||'9999').localeCompare(b.due||'9999');
+ });
+}
+
+/* วันเกิดสมาชิก -> สร้างรายการเสมือน เพื่อให้เห็นในปฏิทินและหน้าแรก */
+function birthdayItems(){
+ const out=[];
+ S.members.forEach(m=>{
+  if(!m.birth)return;
+  const b=parseD(m.birth), now=new Date();
+  let y=now.getFullYear();
+  let next=new Date(y,b.getMonth(),b.getDate());
+  if(toISO(next)<today())next=new Date(y+1,b.getMonth(),b.getDate());
+  const age=next.getFullYear()-b.getFullYear();
+  out.push({id:'bd_'+m.id,virtual:true,cat:'birthday',title:`วันเกิด${m.rel?m.rel:''} ${m.name}`,
+   note:age>0?`อายุครบ ${age} ปี`:'',due:toISO(next),who:m.id,prio:'high',repeat:'yearly',remind:[7,1],done:false});
+ });
+ return out;
+}
+const allItems=()=>[...S.items,...birthdayItems()];
+
+/* ══════════ การแจ้งเตือน ══════════ */
+function toast(em,title,sub,ms=5200){
+ const el=document.createElement('div');
+ el.className='toast';
+ el.innerHTML=`<span class="em">${em}</span><div><b>${title}</b>${sub?`<small>${sub}</small>`:''}</div>`;
+ $('#toasts').appendChild(el);
+ setTimeout(()=>{el.style.transition='.3s';el.style.opacity='0';el.style.transform='translateY(-10px)';
+  setTimeout(()=>el.remove(),320);},ms);
+}
+/* ตรวจว่ากำลังเปิดแบบแอปเต็มจอหรือไม่ — ต้องประกาศไว้บน window เพื่อให้เรียกได้ทุกที่
+   เดิมประกาศเป็น const ไว้ท้ายไฟล์ ทำให้ window.isStandalone เป็น undefined
+   ผลคือ iPhone ติดข้อความ "เพิ่มลงหน้าจอโฮมก่อน" ตลอด แม้เปิดจากไอคอนแล้วก็ตาม */
+window.isStandalone=function(){
+ try{
+  if(window.navigator && window.navigator.standalone===true) return true;           // iOS
+  if(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) return true;
+  if(window.matchMedia && window.matchMedia('(display-mode: fullscreen)').matches) return true;
+  if(document.referrer && document.referrer.startsWith('android-app://')) return true;
+ }catch(_){}
+ return false;
+};
+const isIOSDevice=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+
+/* ขออนุญาตแจ้งเตือน
+   สำคัญมากบน iOS: ต้องเรียก Notification.requestPermission() เป็นคำสั่งแรก
+   ในจังหวะที่ผู้ใช้กดปุ่ม ห้ามมี await อื่นมาคั่นก่อน ไม่งั้น Safari จะถือว่าหมดสิทธิ์
+   จากการกด แล้วจะไม่ขึ้นหน้าต่างขออนุญาตเลย (เงียบหายไปเฉย ๆ) */
+function requestNotifyPermissionNow(){
+ if(!('Notification' in window)){ console.log('[push] ไม่มี Notification API'); return Promise.resolve('unsupported'); }
+ if(Notification.permission!=='default'){ console.log('[push] permission เดิม =',Notification.permission); return Promise.resolve(Notification.permission); }
+ try{
+  /* Safari 16.4+ และ Chrome รองรับแบบ Promise — ต้องเรียกตรง ๆ ในจังหวะกดปุ่ม ห้ามมี await คั่นก่อน */
+  const r=Notification.requestPermission();
+  if(r && typeof r.then==='function'){
+   return r.then(p=>{ console.log('[push] ผู้ใช้ตอบ =',p); return p; })
+           .catch(e=>{ console.log('[push] requestPermission error',e&&e.message); return Notification.permission; });
+  }
+  /* เบราว์เซอร์เก่าที่รองรับเฉพาะแบบ callback — ต้องรอ callback จริง ห้ามคืนค่าทันที
+     (ของเดิมคืนค่าทันทีทำให้ระบบคิดว่า "ไม่อนุญาต" ตั้งแต่ยังไม่ทันขึ้นหน้าต่างถาม) */
+  return new Promise(res=>{
+   let done=false;
+   try{ Notification.requestPermission(p=>{ done=true; console.log('[push] callback =',p); res(p||Notification.permission); }); }
+   catch(e){ done=true; res(Notification.permission); }
+   setTimeout(()=>{ if(!done) res(Notification.permission); }, 30000);
+  });
+ }catch(e){ console.log('[push] requestPermission ล้มเหลว',e&&e.message); return Promise.resolve(Notification.permission); }
+}
+
+/* เวอร์ชัน iOS จาก User Agent — ใช้บอกผู้ใช้ได้ว่าเครื่องเก่าเกินไปหรือไม่ */
+function iosVersion(){
+ const m=navigator.userAgent.match(/OS (\d+)[._](\d+)(?:[._](\d+))? like Mac/);
+ if(!m) return null;
+ return { major:+m[1], minor:+m[2], text:`${m[1]}.${m[2]}${m[3]?'.'+m[3]:''}` };
+}
+function iosSupportsWebPush(){
+ const v=iosVersion();
+ if(!v) return true;                       // ไม่ใช่ iOS ก็ไม่ต้องกังวล
+ return v.major>16 || (v.major===16 && v.minor>=4);
+}
+
+
+/* ---------- ตรวจสภาพเครื่องจริง ไม่เดา ---------- */
+async function pushDiagnostics(){
+ const d={};
+ const nav=window.navigator||{};
+ d['เปิดจากไอคอนหน้าจอโฮม (navigator.standalone)'] = (nav.standalone===true)?'true ✅':String(nav.standalone===undefined?'undefined (ไม่ใช่ iOS Safari)':nav.standalone);
+ try{ d['display-mode: standalone'] = window.matchMedia('(display-mode: standalone)').matches?'true ✅':'false'; }catch(e){ d['display-mode: standalone']='ตรวจไม่ได้'; }
+ d['สรุป: กำลังเปิดแบบแอปเต็มจอ'] = window.isStandalone()?'ใช่ ✅':'ไม่ใช่ ❌';
+ d['Notification API'] = ('Notification' in window)?'มี ✅':'ไม่มี ❌';
+ d['Notification.permission'] = ('Notification' in window)?Notification.permission:'—';
+ d['Service Worker'] = ('serviceWorker' in navigator)?'มี ✅':'ไม่มี ❌';
+ d['PushManager'] = ('PushManager' in window)?'มี ✅':'ไม่มี ❌';
+ d['HTTPS (isSecureContext)'] = window.isSecureContext?'ใช่ ✅':'ไม่ใช่ ❌';
+ const v=iosVersion();
+ d['เวอร์ชัน iOS'] = v?(v.text+(iosSupportsWebPush()?'  ✅ รองรับ':'  ❌ ต่ำกว่า 16.4 ใช้ Push ไม่ได้')):'ไม่ใช่ iOS';
+ try{
+  if('serviceWorker' in navigator){
+   const reg=await navigator.serviceWorker.getRegistration();
+   d['Service Worker ลงทะเบียนแล้ว'] = reg?('ใช่ ✅  scope: '+reg.scope):'ยัง ❌';
+   if(reg && reg.pushManager){
+    const sub=await reg.pushManager.getSubscription();
+    d['PushSubscription'] = sub?('มีแล้ว ✅  '+String(sub.endpoint).slice(0,44)+'…'):'ยังไม่มี';
+   }
+  }
+ }catch(e){ d['Service Worker ลงทะเบียนแล้ว']='ตรวจไม่ได้: '+(e&&e.message); }
+ d['ที่อยู่หน้านี้'] = location.origin+location.pathname;
+ d['User Agent'] = navigator.userAgent;
+ return d;
+}
+async function showPushDiagnostics(){
+ const d=await pushDiagnostics();
+ console.log('[push] ผลตรวจเครื่องนี้',d);
+ const rows=Object.entries(d).map(([k,v])=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px dotted var(--line);font-size:12.5px">
+   <span style="color:var(--muted);flex:1;min-width:0">${k}</span>
+   <b style="max-width:52%;word-break:break-all;text-align:right">${String(v)}</b></div>`).join('');
+ const v=iosVersion();
+ let verdict='',cls='note';
+ if(!window.isSecureContext){ verdict='❌ ไม่ได้เปิดผ่าน HTTPS — Push ใช้ไม่ได้'; cls='note warn'; }
+ else if(isIOSDevice() && !iosSupportsWebPush()){
+  verdict='❌ <b>เครื่องนี้เป็น iOS '+(v?v.text:'ต่ำกว่า 16.4')+'</b><br><br>การแจ้งเตือนบนเว็บใช้ได้ตั้งแต่ <b>iOS 16.4</b> ขึ้นไปเท่านั้น เป็นข้อจำกัดของ Apple ไม่สามารถแก้ที่โค้ดได้<br><br><b>ทางออก:</b> อัปเดต iOS แล้วลองใหม่ หรือใช้ปุ่ม "ส่งรายการเข้าปฏิทินมือถือ" ซึ่งเตือนได้แม้ปิดแอปเหมือนกัน';
+  cls='note warn';
+ }
+ else if(!('Notification' in window)){
+  verdict = isIOSDevice()
+   ? (window.isStandalone()
+      ? '❌ เปิดจากไอคอนแล้วแต่ยังไม่มี Notification API<br><br>ให้ <b>ลบไอคอนเดิมทิ้ง</b> แล้วเพิ่มใหม่จาก <b>Safari</b> อีกครั้ง (ไอคอนเก่าอาจถูกเพิ่มจากเบราว์เซอร์อื่นหรือชี้ไปลิงก์เดิม)'
+      : '❌ ยังเปิดจาก Safari ธรรมดา หรือจากในแอปอื่น (LINE / Facebook / Chrome)<br><br>iPhone มี Notification API เฉพาะตอนเปิดจาก <b>ไอคอนที่เพิ่มลงหน้าจอโฮมด้วย Safari</b> เท่านั้น')
+   : '❌ เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน';
+  cls='note warn';
+ }
+ else if(Notification.permission==='denied'){
+  verdict='⚠️ เคยกดปฏิเสธไว้<br><br>เปิดใหม่ที่ <b>ตั้งค่า iPhone → การแจ้งเตือน → Family OS → อนุญาตการแจ้งเตือน</b>';
+  cls='note warn';
+ }
+ else if(Notification.permission==='granted'){ verdict='✅ อนุญาตแล้ว พร้อมใช้งาน'; cls='note safe'; }
+ else verdict='✅ พร้อมขออนุญาต — กดปุ่ม "เปิดการแจ้งเตือนบนมือถือ" ได้เลย';
+
+ openSheet(`<h3>🔎 ผลตรวจระบบแจ้งเตือน</h3>
+  <p class="sub">ค่าจริงจากเครื่องนี้ ไม่ได้เดา</p>
+  <div class="${cls}">${verdict}</div>
+  <div style="margin-top:14px">${rows}</div>
+  <button class="btn ghost sm" id="dgCopy" style="margin-top:14px">คัดลอกผลตรวจ</button>
+  <button class="btn ghost sm" id="dgClose" style="margin-top:9px">ปิด</button>`,()=>{
+   $('#dgClose').onclick=closeSheet;
+   $('#dgCopy').onclick=async()=>{
+    const txt=Object.entries(d).map(([k,x])=>k+': '+x).join('\n');
+    try{ await navigator.clipboard.writeText(txt); toast('✅','คัดลอกแล้ว','ส่งข้อความนี้ให้ผู้ดูแลระบบดูได้'); }
+    catch(e){ toast('ℹ️','คัดลอกไม่ได้','กดค้างที่ข้อความเพื่อคัดลอกเอง'); }
+   };
+  });
+}
+
+async function askNotify(prePermission){
+ const standalone=window.isStandalone();
+ const ios=isIOSDevice();
+ console.log('[push] เริ่มขออนุญาต | standalone =',standalone,'| iOS =',ios,'| iOS version =',(iosVersion()||{}).text||'-');
+
+ if(!window.isSecureContext){
+  toast('⚠️','ต้องเปิดผ่าน HTTPS','การแจ้งเตือนจริงต้องใช้เว็บไซต์ HTTPS');
+  return false;
+ }
+
+ /* ไม่มี Notification API = ขออนุญาตไม่ได้เลย ต้องแยกให้ชัดว่าเพราะอะไร */
+ if(!('Notification' in window)){
+  if(ios && !standalone){
+   toast('📱','ยังเปิดจาก Safari อยู่',
+    'iPhone ต้องเปิดจากไอคอนที่เพิ่มลงหน้าจอโฮมด้วย Safari เท่านั้น · ถ้าเพิ่มไอคอนแล้วยังขึ้นแบบนี้ ให้ลบไอคอนเดิมแล้วเพิ่มใหม่',14000);
+  } else if(ios && standalone && !iosSupportsWebPush()){
+   const v=iosVersion();
+   toast('📱','iOS เวอร์ชันนี้ยังไม่รองรับ',
+    `เครื่องนี้เป็น iOS ${v?v.text:'เก่ากว่า 16.4'} · การแจ้งเตือนบนเว็บใช้ได้ตั้งแต่ iOS 16.4 ขึ้นไป ให้อัปเดต iOS ก่อน · ระหว่างนี้ใช้ปุ่มส่งรายการเข้าปฏิทินมือถือแทนได้`,16000);
+  } else if(ios && standalone){
+   toast('📱','เปิดจากไอคอนแล้วแต่ยังไม่มีระบบแจ้งเตือน',
+    'ให้ลบไอคอนเดิมทิ้งแล้วเพิ่มใหม่จาก Safari อีกครั้ง · กด "ตรวจเครื่องนี้" เพื่อดูค่าจริง',14000);
+  } else {
+   toast('ℹ️','เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน','ลองเปิดด้วย Chrome หรือ Safari รุ่นล่าสุด');
+  }
+  setTimeout(showPushDiagnostics,700);
+  return false;
+ }
+
+ try{
+  const permission = prePermission || await requestNotifyPermissionNow();
+  console.log('[push] ผลการอนุญาต =',permission);
+
+  if(permission==='unsupported'){ toast('ℹ️','เบราว์เซอร์นี้ไม่รองรับ',''); return false; }
+
+  if(permission==='denied'){
+   S.settings.notify=false; save();
+   toast('🚫','เคยกดปฏิเสธไว้',
+    ios ? 'เปิดใหม่ได้ที่ ตั้งค่า iPhone → การแจ้งเตือน → Family OS → อนุญาตการแจ้งเตือน'
+        : 'เปิดใหม่ได้ที่การตั้งค่าเว็บไซต์ของเบราว์เซอร์ → การแจ้งเตือน → อนุญาต',15000);
+   return false;
+  }
+
+  if(permission!=='granted'){
+   S.settings.notify=false; save();
+   toast('ℹ️','ยังไม่ได้อนุญาต','กดปุ่มอีกครั้งแล้วเลือก "อนุญาต" ตอนที่หน้าต่างขึ้นมา');
+   return false;
+  }
+
+  /* ได้รับอนุญาตแล้ว → ต่อเข้ากับ Push โดยใช้ VAPID PUBLIC KEY เดิมจากเซิร์ฟเวอร์ */
+  if(!('serviceWorker' in navigator)) throw new Error('เครื่องนี้ไม่มี Service Worker');
+  if(!('PushManager' in window)) throw new Error('เครื่องนี้ไม่มี PushManager');
+
+  const reg=await navigator.serviceWorker.ready;
+  console.log('[push] service worker พร้อม scope =',reg.scope);
+
+  const cfg=await fetch('/.netlify/functions/push-config',{cache:'no-store'})
+    .then(r=>r.ok?r.json():Promise.reject(new Error('push-config')));
+  const vapid=base64ToUint8Array(cfg.publicKey);
+  console.log('[push] ได้ VAPID public key ความยาว',String(cfg.publicKey||'').length,'ตัวอักษร');
+
+  let sub=await reg.pushManager.getSubscription();
+  if(!sub){
+   sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:vapid});
+   console.log('[push] สมัคร subscription ใหม่แล้ว');
+  } else console.log('[push] มี subscription เดิมอยู่แล้ว');
+
+  const deviceId=getPushDeviceId();
+  await fetch('/.netlify/functions/push-subscribe',{
+    method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({deviceId,subscription:sub.toJSON(),
+      timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Bangkok',items:pushItems()})
+  }).then(r=>{if(!r.ok)throw new Error('push-subscribe');return r.json();});
+
+  S.settings.notify=true;S.settings.pushSubscribed=true;save();
+  console.log('[push] เปิดใช้งานสำเร็จ');
+  toast('🔔','เปิดการแจ้งเตือนแล้ว','ถึงกำหนดแล้วจะเตือน แม้ไม่ได้เปิด Family OS');
+  return true;
+
+ }catch(e){
+  console.error('[push] ล้มเหลว',e);
+  S.settings.notify=false;S.settings.pushSubscribed=false;save();
+  const msg = e?.message==='push-config' ? 'ยังไม่ได้ตั้งค่า VAPID_PUBLIC_KEY บน Netlify'
+    : e?.message==='push-subscribe' ? 'บันทึก subscription ที่เซิร์ฟเวอร์ไม่สำเร็จ'
+    : (e?.message||'ตรวจการอนุญาตแจ้งเตือนและการตั้งค่า Netlify');
+  toast('⚠️','เปิดแจ้งเตือนไม่สำเร็จ',msg,12000);
+  return false;
+ }
+}
+function base64ToUint8Array(base64){const pad='='.repeat((4-base64.length%4)%4),b=(base64+pad).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(b);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)));}
+function getPushDeviceId(){let id=localStorage.getItem(KEY+':push-device');if(!id){id='d_'+uid('');localStorage.setItem(KEY+':push-device',id);}return id;}
+function pushItems(){
+ return allItems().filter(i=>!i.done&&i.due).map(i=>({
+  id:i.id,title:i.title,note:i.note||'',due:i.due,time:i.time||'09:00',
+  remind:(i.remind&&i.remind.length)?i.remind:[1,0],repeat:i.repeat||'none',
+  em:(CATS[i.cat]||CATS.other).em,virtual:!!i.virtual
+ }));
+}
+function pushPermissionStatus(){
+ if(!('Notification' in window))
+  return isIOSDevice()
+   ? 'ยังเปิดจาก Safari อยู่ — ต้องเพิ่มลงหน้าจอโฮมแล้วเปิดจากไอคอนก่อน'
+   : 'เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน';
+ if(Notification.permission==='granted')return S.settings?.pushSubscribed?'เปิดใช้งานอยู่':'อนุญาตแล้ว แต่ยังไม่ได้เชื่อมต่อ Push';
+ if(Notification.permission==='denied')return 'ถูกบล็อก — ต้องอนุญาต Family OS ในการตั้งค่าของเบราว์เซอร์/เครื่อง';
+ return 'ยังไม่ได้อนุญาต';
+}
+let pushSyncTimer=null;
+function queuePushSync(){if(!S.settings?.pushSubscribed)return;clearTimeout(pushSyncTimer);pushSyncTimer=setTimeout(()=>syncPushSchedule().catch(()=>{}),500);}
+async function syncPushSchedule(){
+ if(!S.settings?.pushSubscribed)return;
+ const reg=await navigator.serviceWorker.ready, sub=await reg.pushManager.getSubscription();
+ if(!sub){S.settings.pushSubscribed=false;save();return;}
+ const r=await fetch('/.netlify/functions/push-subscribe',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({deviceId:getPushDeviceId(),subscription:sub.toJSON(),timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Asia/Bangkok',items:pushItems()})});
+ if(!r.ok)throw new Error('push-subscribe '+r.status);
+}
+async function checkPushServer(){
+ try{
+  const r=await fetch('/.netlify/functions/push-status',{cache:'no-store'});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok){
+   /* แสดงสาเหตุจริงที่เซิร์ฟเวอร์ส่งกลับมา จะได้รู้ว่าต้องแก้ตรงไหน */
+   const why=d.detail||(d.problems&&d.problems[0])||(d.missing&&d.missing.length?('ยังไม่ได้ตั้งค่า: '+d.missing.join(', ')):'')||d.error||'เซิร์ฟเวอร์ Push ยังตั้งค่าไม่ครบ';
+   throw new Error(why);
+  }
+  return true;
+ }catch(e){
+  toast('⚠️','ระบบ Push ยังไม่พร้อม',(e&&e.message)||'ตรวจ Environment Variables บน Netlify',12000);
+  return false;
+ }
+}
+async function testPush(){
+ if(!S.settings?.pushSubscribed){
+  const ok=await askNotify(await requestNotifyPermissionNow());
+  if(!ok)return;
+ }
+ try{
+  const r=await fetch('/.netlify/functions/push-test',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({deviceId:getPushDeviceId()})});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw new Error(data.error||`HTTP ${r.status}`);
+  toast('🧪','ส่งการแจ้งเตือนทดสอบแล้ว','ลองล็อกหน้าจอ/ออกจาก Family OS แล้วรอดูการแจ้งเตือน');
+ }catch(e){console.error(e);toast('⚠️','ทดสอบ Push ไม่สำเร็จ',e.message||'ตรวจ VAPID และ Netlify Functions');}
+}
+function fireNotify(em,title,body){
+ toast(em,title,body);
+ try{if(S.settings.notify&&'Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:'icon-192.png',badge:'icon-192.png'});}catch(e){}
+}
+function checkReminders(){
+ const list=allItems().filter(i=>!i.done&&i.due);
+ let fired=0;
+ list.forEach(it=>{
+  const d=diffDays(it.due);
+  const remind=(it.remind&&it.remind.length)?it.remind:[1];
+  const hit = d<0 ? 'over' : (d===0?'today':(remind.includes(d)?'pre':null));
+  if(!hit)return;
+  const stamp=`${it.id}|${today()}|${hit}`;
+  if(notified[stamp])return;
+  notified[stamp]=1;
+  if(fired>=3)return;
+  fired++;
+  const c=CATS[it.cat]||CATS.other;
+  if(hit==='over')fireNotify('⚫','เลยกำหนดแล้ว '+Math.abs(d)+' วัน',`${c.em} ${it.title}`);
+  else if(hit==='today')fireNotify('🔴','ครบกำหนดวันนี้',`${c.em} ${it.title}`);
+  else fireNotify('🔔',`ใกล้ครบกำหนดในอีก ${d} วัน`,`${c.em} ${it.title}`);
+ });
+ try{localStorage.setItem(KEY+':notified',JSON.stringify(notified));}catch(e){}
+}
+
+/* ══════════ ตัวช่วย UI ══════════ */
+function openSheet(html,onMount){
+ const root=$('#modalRoot');
+ root.innerHTML=`<div class="modal" id="mdl"><div class="sheet" id="sht"><div class="grab"></div>${html}</div></div>`;
+ $('#mdl').onclick=e=>{if(e.target.id==='mdl')closeSheet();};
+ document.body.style.overflow='hidden';
+ if(onMount)onMount();
+}
+function closeSheet(){$('#modalRoot').innerHTML='';document.body.style.overflow='';}
+
+function confirmBox(title,msg,onYes,yesText='ยืนยัน'){
+ openSheet(`<h3>${title}</h3><p class="sub">${msg}</p>
+  <div class="row2"><button class="btn danger" id="cy">${yesText}</button>
+  <button class="btn ghost" id="cn">ยกเลิก</button></div>`,()=>{
+  $('#cy').onclick=()=>{closeSheet();onYes();};
+  $('#cn').onclick=closeSheet;
+ });
+}
+
+/* ══════════ ฟอร์มรายการ ══════════ */
+function itemForm(existing,preset){
+ const it=existing||Object.assign({id:'',cat:'other',title:'',note:'',due:today(),time:'',who:'',
+  prio:'normal',repeat:'none',remind:[0,1,7],amount:'',flow:'out',done:false},preset||{});
+ const catOpts=Object.entries(CATS).map(([k,c])=>`<option value="${k}" ${it.cat===k?'selected':''}>${c.em} ${c.name}</option>`).join('');
+ const memOpts=`<option value="">— ไม่ระบุ —</option>`+S.members.map(m=>`<option value="${m.id}" ${it.who===m.id?'selected':''}>${m.avatar||'🧑'} ${m.name}${m.rel?' ('+m.rel+')':''}</option>`).join('');
+ const repOpts=Object.entries(REPEATS).map(([k,v])=>`<option value="${k}" ${it.repeat===k?'selected':''}>${v}</option>`).join('');
+ const prioOpts=Object.entries(PRIOS).map(([k,v])=>`<option value="${k}" ${it.prio===k?'selected':''}>${v}</option>`).join('');
+ const remChips=[0,1,3,7,14,30].map(d=>`<button class="chip sm rem ${(it.remind||[]).includes(d)?'on':''}" data-d="${d}">${d===0?'วันนี้':d+' วัน'}</button>`).join('');
+
+ openSheet(`
+  <h3>${existing?'แก้ไขรายการ':'เพิ่มรายการใหม่'}</h3>
+  <p class="sub">กรอกเท่าที่รู้ก็พอ แก้เพิ่มทีหลังได้เสมอ</p>
+  <div class="f"><label>เรื่องอะไร</label><input id="f_title" value="${(it.title||'').replace(/"/g,'&quot;')}" placeholder="เช่น พาแม่ไปหาหมอ / ต่อประกันรถ"></div>
+  <div class="f"><label>หมวดหมู่</label><select id="f_cat">${catOpts}</select></div>
+  <div class="f2">
+   <div class="f"><label>วันครบกำหนด</label><input type="date" id="f_due" value="${it.due||''}"></div>
+   <div class="f"><label>เวลา (ถ้ามี)</label><input type="time" id="f_time" value="${it.time||''}"></div>
+  </div>
+  <div class="f"><label>ใครดูแลเรื่องนี้</label><select id="f_who">${memOpts}</select></div>
+  <div class="f2">
+   <div class="f"><label>ความสำคัญ</label><select id="f_prio">${prioOpts}</select></div>
+   <div class="f"><label>ทำซ้ำ</label><select id="f_rep">${repOpts}</select></div>
+  </div>
+  <div class="f"><label>เตือนล่วงหน้า / วันครบกำหนด (เลือกได้หลายอัน)</label><div class="chips" id="remWrap">${remChips}</div></div>
+  <div class="f2">
+   <div class="f"><label>จำนวนเงิน (ถ้าเกี่ยวกับเงิน)</label><input type="number" id="f_amt" value="${it.amount||''}" placeholder="เช่น 1200"></div>
+   <div class="f"><label>ประเภทเงิน</label><select id="f_flow">
+     <option value="out" ${it.flow==='out'?'selected':''}>รายจ่าย</option>
+     <option value="in" ${it.flow==='in'?'selected':''}>รายรับ</option></select></div>
+  </div>
+  <div class="f"><label>รายละเอียดเพิ่มเติม</label><textarea id="f_note" placeholder="เช่น รพ.ศิริราช ตึกผู้ป่วยนอก ชั้น 3 / เลขกรมธรรม์ ...">${it.note||''}</textarea></div>
+  <button class="btn" id="f_save">${existing?'บันทึกการแก้ไข':'เพิ่มรายการ'}</button>
+  ${existing?`<button class="btn danger sm" id="f_del" style="margin-top:9px">ลบรายการนี้</button>`:''}
+  <button class="btn ghost sm" id="f_cancel" style="margin-top:9px">ยกเลิก</button>
+ `,()=>{
+  let rem=[...(it.remind||[])];
+  $$('.rem').forEach(b=>b.onclick=()=>{
+   const d=+b.dataset.d;
+   if(rem.includes(d)){rem=rem.filter(x=>x!==d);b.classList.remove('on');}
+   else{rem.push(d);b.classList.add('on');}
+  });
+  $('#f_cancel').onclick=closeSheet;
+  if($('#f_del'))$('#f_del').onclick=()=>confirmBox('ลบรายการนี้?','ลบแล้วกู้คืนไม่ได้',()=>{
+   S.items=S.items.filter(x=>x.id!==it.id);save();render();queuePushSync();toast('🗑️','ลบรายการแล้ว','');
+  },'ลบเลย');
+  $('#f_save').onclick=()=>{
+   const title=$('#f_title').value.trim();
+   if(!title){toast('⚠️','ยังไม่ได้ใส่ชื่อเรื่อง','กรอกช่องแรกก่อนนะครับ');return;}
+   const data={cat:$('#f_cat').value,title,note:$('#f_note').value.trim(),
+    due:$('#f_due').value||'',time:$('#f_time').value||'',who:$('#f_who').value||'',
+    prio:$('#f_prio').value,repeat:$('#f_rep').value,remind:rem.sort((a,b)=>a-b),
+    amount:$('#f_amt').value?Number($('#f_amt').value):'',flow:$('#f_flow').value};
+   if(existing){Object.assign(existing,data);}
+   else{S.items.push(Object.assign({id:uid('i'),done:false,created:today()},data));}
+   save();closeSheet();render();
+   queuePushSync();
+   toast('✅',existing?'บันทึกแล้ว':'เพิ่มรายการแล้ว',data.due?`ครบกำหนด ${fmtD(data.due)}`:'');
+  };
+ });
+}
+
+/* ══════════ ฟอร์มสมาชิก ══════════ */
+function memberForm(existing){
+ const m=existing||{id:'',name:'',rel:'',birth:'',avatar:'🧑',blood:'',allergy:'',chronic:'',med:'',hospital:'',emergency:'',note:''};
+ const avs=AVATARS.map(a=>`<button class="chip sm av-pick ${m.avatar===a?'on':''}" data-a="${a}" style="font-size:19px">${a}</button>`).join('');
+ const rels=RELATIONS.map(r=>`<option value="${r}" ${m.rel===r?'selected':''}>${r}</option>`).join('');
+ openSheet(`
+  <h3>${existing?'แก้ไขข้อมูลสมาชิก':'เพิ่มสมาชิกครอบครัว'}</h3>
+  <p class="sub">ข้อมูลสุขภาพช่วยให้ใช้ในยามฉุกเฉินได้ กรอกเท่าที่สะดวก</p>
+  <div class="f"><label>รูปแทนตัว</label><div class="chips" id="avWrap">${avs}</div></div>
+  <div class="f2">
+   <div class="f"><label>ชื่อเรียก</label><input id="m_name" value="${(m.name||'').replace(/"/g,'&quot;')}" placeholder="เช่น แม่ / น้องปอ"></div>
+   <div class="f"><label>ความสัมพันธ์</label><select id="m_rel"><option value="">— เลือก —</option>${rels}</select></div>
+  </div>
+  <div class="f"><label>วันเกิด</label><input type="date" id="m_birth" value="${m.birth||''}"></div>
+  <div class="note">ส่วนด้านล่างนี้ใช้สำหรับ <b>บัตรฉุกเฉิน</b> ที่พิมพ์พกติดตัวได้ — มีประโยชน์มากตอนเกิดเหตุที่เจ้าตัวบอกเองไม่ได้</div>
+  <div class="f2" style="margin-top:12px">
+   <div class="f"><label>กรุ๊ปเลือด</label><input id="m_blood" value="${m.blood||''}" placeholder="เช่น O Rh+"></div>
+   <div class="f"><label>โรคประจำตัว</label><input id="m_chronic" value="${(m.chronic||'').replace(/"/g,'&quot;')}" placeholder="เช่น เบาหวาน ความดัน"></div>
+  </div>
+  <div class="f"><label>ยาที่แพ้ (สำคัญที่สุด)</label><input id="m_allergy" value="${(m.allergy||'').replace(/"/g,'&quot;')}" placeholder="เช่น เพนนิซิลลิน, ยาซัลฟา"></div>
+  <div class="f"><label>ยาที่กินประจำ</label><input id="m_med" value="${(m.med||'').replace(/"/g,'&quot;')}" placeholder="ชื่อยา + เวลากิน"></div>
+  <div class="f2">
+   <div class="f"><label>โรงพยาบาลประจำ / สิทธิรักษา</label><input id="m_hos" value="${(m.hospital||'').replace(/"/g,'&quot;')}" placeholder="เช่น รพ.ประจำ + บัตรทอง"></div>
+   <div class="f"><label>เบอร์ติดต่อฉุกเฉิน</label><input id="m_eme" value="${(m.emergency||'').replace(/"/g,'&quot;')}" placeholder="ชื่อ + เบอร์"></div>
+  </div>
+  <button class="btn" id="m_save">${existing?'บันทึก':'เพิ่มสมาชิก'}</button>
+  ${existing?`<button class="btn danger sm" id="m_del" style="margin-top:9px">ลบสมาชิกนี้</button>`:''}
+  <button class="btn ghost sm" id="m_cancel" style="margin-top:9px">ยกเลิก</button>
+ `,()=>{
+  let av=m.avatar||'🧑';
+  $$('.av-pick').forEach(b=>b.onclick=()=>{av=b.dataset.a;$$('.av-pick').forEach(x=>x.classList.remove('on'));b.classList.add('on');});
+  $('#m_cancel').onclick=closeSheet;
+  if($('#m_del'))$('#m_del').onclick=()=>confirmBox('ลบสมาชิกนี้?','รายการที่มอบหมายให้คนนี้จะยังอยู่ แต่จะไม่มีผู้รับผิดชอบ',()=>{
+   S.members=S.members.filter(x=>x.id!==m.id);
+   S.items.forEach(i=>{if(i.who===m.id)i.who='';});
+   save();render();queuePushSync();toast('🗑️','ลบสมาชิกแล้ว','');
+  },'ลบเลย');
+  $('#m_save').onclick=()=>{
+   const name=$('#m_name').value.trim();
+   if(!name){toast('⚠️','ยังไม่ได้ใส่ชื่อ','');return;}
+   const data={name,rel:$('#m_rel').value,birth:$('#m_birth').value,avatar:av,
+    blood:$('#m_blood').value.trim(),chronic:$('#m_chronic').value.trim(),
+    allergy:$('#m_allergy').value.trim(),med:$('#m_med').value.trim(),
+    hospital:$('#m_hos').value.trim(),emergency:$('#m_eme').value.trim()};
+   if(existing)Object.assign(existing,data);
+   else S.members.push(Object.assign({id:uid('m')},data));
+   save();closeSheet();render();queuePushSync();toast('✅','บันทึกข้อมูลสมาชิกแล้ว','');
+  };
+ });
+}
+
+/* ══════════ ทำเสร็จ / ทำซ้ำ ══════════ */
+function nextDue(iso,rep){
+ const d=parseD(iso), day=d.getDate();
+ if(rep==='daily'){d.setDate(d.getDate()+1);return toISO(d);}
+ if(rep==='weekly'){d.setDate(d.getDate()+7);return toISO(d);}
+ if(rep==='monthly'||rep==='yearly'){
+  // ต้องกันวันล้นเดือน เช่น 31 ม.ค. + 1 เดือน ต้องได้ 28/29 ก.พ. ไม่ใช่ 3 มี.ค.
+  const y=rep==='yearly'?d.getFullYear()+1:d.getFullYear();
+  const mo=rep==='yearly'?d.getMonth():d.getMonth()+1;
+  const t=new Date(y,mo,1);
+  const last=new Date(t.getFullYear(),t.getMonth()+1,0).getDate();
+  t.setDate(Math.min(day,last));
+  return toISO(t);
+ }
+ return iso;
+}
+function toggleDone(id){
+ const it=S.items.find(x=>x.id===id);
+ if(!it)return;
+ if(!it.done&&it.repeat&&it.repeat!=='none'&&it.due){
+  const nd=nextDue(it.due,it.repeat);
+  it.due=nd;it.done=false;
+  save();render();
+  toast('🔁','ทำเสร็จแล้ว เลื่อนไปครั้งถัดไป',`ครั้งต่อไป ${fmtD(nd)}`);
+  return;
+ }
+ it.done=!it.done;
+ it.completedAt=it.done?today():'';
+ save();render();
+ if(it.done)toast('🎉','เยี่ยมมาก ทำเสร็จแล้ว',it.title);
+}
+
+/* ══════════ การ์ดรายการ ══════════ */
+function itemRow(it){
+ const c=CATS[it.cat]||CATS.other, st=statusOf(it), who=memberOf(it.who);
+ const meta=[];
+ if(it.due)meta.push(fmtD(it.due)+(it.time?' · '+it.time+' น.':''));
+ if(who)meta.push(`${who.avatar||'🧑'} ${who.name}`);
+ if(it.amount)meta.push(`${it.flow==='in'?'+':'−'}${money(it.amount)} บาท`);
+ return `<div class="item ${it.done?'done':''}" data-id="${it.id}">
+  <span class="bar" style="background:${st.color}"></span>
+  ${it.virtual?`<span class="em">${c.em}</span>`:`<button class="chk ${it.done?'on':''}" data-chk="${it.id}">✓</button>`}
+  <div class="body">
+   <div class="ti">${it.virtual?'':''}${escapeHtml(it.title)}</div>
+   <div class="me">${meta.join(' · ')}</div>
+   ${it.note?`<div class="me" style="opacity:.8">${escapeHtml(it.note)}</div>`:''}
+   <div class="tags">
+    <span class="tag">${c.em} ${c.name}</span>
+    ${it.prio&&it.prio!=='normal'?`<span class="tag" style="background:#FFEDE8;color:#C24A32">${PRIOS[it.prio]}</span>`:''}
+    ${it.repeat&&it.repeat!=='none'?`<span class="tag">🔁 ${REPEATS[it.repeat]}</span>`:''}
+   </div>
+  </div>
+  <div class="right"><span class="pill ${st.cls}">${st.label}</span></div>
+ </div>`;
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function bindItems(root){
+ $$('.item',root).forEach(el=>{
+  el.onclick=e=>{
+   if(e.target.closest('[data-chk]'))return;
+   const id=el.dataset.id;
+   if(id.startsWith('bd_')){
+    const m=memberOf(id.slice(3));
+    if(m)memberForm(m);
+    return;
+   }
+   const it=S.items.find(x=>x.id===id);
+   if(it)itemForm(it);
+  };
+ });
+ $$('[data-chk]',root).forEach(b=>b.onclick=e=>{e.stopPropagation();toggleDone(b.dataset.chk);});
+}
+
+/* ══════════ หน้าต่าง ๆ ══════════ */
+function viewHome(){
+ const items=allItems();
+ const act=items.filter(i=>!i.done);
+ const doneCount=S.items.filter(i=>i.done).length;
+ const overdue=act.filter(i=>statusOf(i).k==='over').length;
+ const soon=act.filter(i=>['today','tmr','w'].includes(statusOf(i).k)).length;
+ const love=act.filter(i=>['love','birthday','health'].includes(i.cat)).length;
+ const upcoming=sortItems(act).slice(0,6);
+ const heart=sortItems(act.filter(i=>['love','birthday','health','school'].includes(i.cat))).slice(0,5);
+ const hour=new Date().getHours();
+ const greet=hour<11?'สวัสดีตอนเช้า':hour<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น';
+ const meName=S.settings.me||S.settings.familyName||'';
+
+ const isEmpty=!S.members.length&&!S.items.length;
+ return `
+ ${isEmpty?`<div class="card" style="margin-top:18px;text-align:center;padding:22px 18px">
+   <div style="font-size:40px">🏠</div>
+   <div class="mitr" style="font-size:17px;margin:8px 0 6px">ยังไม่มีข้อมูลในบ้านนี้</div>
+   <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px">
+    อยากเห็นภาพก่อนว่าใช้ยังไง กดปุ่มด้านล่างเพื่อดูตัวอย่างครอบครัวสมมติได้เลย<br>ล้างทิ้งเมื่อไหร่ก็ได้</div>
+   <button class="btn" id="emptyDemo">👀 ดูตัวอย่างการใช้งาน</button>
+   <button class="btn ghost sm" id="emptyMem" style="margin-top:9px">＋ เริ่มเพิ่มคนในบ้านเลย</button>
+  </div>`:''}
+ ${S.settings.demo?`<div class="note" style="margin-top:14px">👀 <b>ตอนนี้เป็นข้อมูลตัวอย่าง</b> ลองกดเล่นได้เต็มที่ · เมื่อพร้อมใช้จริง ไปที่ <b>ตั้งค่า → ล้างข้อมูลทั้งหมด</b> แล้วเริ่มใส่ข้อมูลครอบครัวคุณเอง</div>`:''}
+ <div class="topbar">
+  <div class="grow">
+   <div class="hello">${greet}${meName?' คุณ'+escapeHtml(meName):''} 👋</div>
+   <h1>วันนี้มีอะไรต้องดูแลบ้าง?</h1>
+  </div>
+  <button class="icobtn" id="btnBell">🔔${(overdue+soon)?'<span class="dotbadge"></span>':''}</button>
+ </div>
+
+ <div class="avatars">
+  ${S.members.map(m=>`<button class="av" data-mem="${m.id}"><div class="em">${m.avatar||'🧑'}</div><div class="nm">${escapeHtml(m.name)}</div></button>`).join('')}
+  <button class="av add" id="addMem"><div class="em">＋</div><div class="nm">เพิ่ม</div></button>
+ </div>
+
+ <div class="sec">
+  <div class="grid4">
+   <button class="stat s-due" data-go="over"><div class="em">🔴</div><div class="n num">${overdue}</div><div class="l">เลยกำหนด</div></button>
+   <button class="stat s-warn" data-go="soon"><div class="em">⚠️</div><div class="n num">${soon}</div><div class="l">ต้องจัดการเร็ว ๆ นี้</div></button>
+   <button class="stat s-love" data-go="love"><div class="em">❤️</div><div class="n num">${love}</div><div class="l">เรื่องของคนที่เรารัก</div></button>
+   <button class="stat s-ok" data-go="done"><div class="em">✅</div><div class="n num">${doneCount}</div><div class="l">เรียบร้อยแล้ว</div></button>
+  </div>
+ </div>
+
+ <div class="sec">
+  <div class="sec-h"><h2>ทำอะไรได้บ้าง</h2></div>
+  <div class="qa">
+   <button class="qbtn" data-add="other"><span class="em">➕</span><span class="t">เพิ่มรายการ</span></button>
+   <button class="qbtn" data-add="health"><span class="em">🩺</span><span class="t">นัดหมอ</span></button>
+   <button class="qbtn" data-add="doc"><span class="em">📄</span><span class="t">เอกสารหมดอายุ</span></button>
+   <button class="qbtn" data-add="money"><span class="em">💰</span><span class="t">ค่าใช้จ่าย</span></button>
+   <button class="qbtn" data-add="love"><span class="em">❤️</span><span class="t">เรื่องสำคัญ</span></button>
+   <button class="qbtn" data-add="school"><span class="em">🎒</span><span class="t">เรื่องโรงเรียน</span></button>
+   <button class="qbtn" id="qMem"><span class="em">👨‍👩‍👧‍👦</span><span class="t">เพิ่มสมาชิก</span></button>
+   <button class="qbtn" id="qCard"><span class="em">🆘</span><span class="t">บัตรฉุกเฉิน</span></button>
+  </div>
+ </div>
+
+ ${heart.length?`<div class="sec">
+  <div class="sec-h"><h2>เรื่องที่ไม่ควรมองข้าม ❤️</h2></div>
+  <div class="itemlist">${heart.map(itemRow).join('')}</div>
+ </div>`:''}
+
+ <div class="sec">
+  <div class="sec-h"><h2>ใกล้ถึงกำหนด</h2><button data-nav="list">ดูทั้งหมด</button></div>
+  <div class="itemlist">
+   ${upcoming.length?upcoming.map(itemRow).join('')
+    :`<div class="card empty"><span class="em">🌿</span>ยังไม่มีรายการค้างอยู่<br>กดปุ่ม ＋ ด้านล่างเพื่อเพิ่มเรื่องแรกได้เลย</div>`}
+  </div>
+ </div>`;
+}
+
+function viewList(filter){
+ const f=filter||'all';
+ const tabs=[['all','ทั้งหมด'],['over','เลยกำหนด'],['soon','7 วันนี้'],['love','สำคัญ'],['done','เสร็จแล้ว']];
+ let list=allItems();
+ if(f==='over')list=list.filter(i=>!i.done&&statusOf(i).k==='over');
+ else if(f==='soon')list=list.filter(i=>!i.done&&['today','tmr','w'].includes(statusOf(i).k));
+ else if(f==='love')list=list.filter(i=>!i.done&&(['love','birthday','health'].includes(i.cat)||i.prio!=='normal'));
+ else if(f==='done')list=list.filter(i=>i.done);
+ else list=list.filter(i=>!i.done);
+ list=sortItems(list);
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">รายการทั้งหมด</div><h1>สิ่งที่ต้องดูแล</h1></div></div>
+ <div class="chips" style="margin-bottom:14px">
+  ${tabs.map(([k,v])=>`<button class="chip ${f===k?'on':''}" data-f="${k}">${v}</button>`).join('')}
+ </div>
+ <div class="itemlist">${list.length?list.map(itemRow).join('')
+  :`<div class="card empty"><span class="em">📭</span>ไม่มีรายการในหมวดนี้</div>`}</div>`;
+}
+
+function viewCalendar(){
+ const y=calCursor.getFullYear(), m=calCursor.getMonth();
+ const first=new Date(y,m,1), start=first.getDay();
+ const days=new Date(y,m+1,0).getDate();
+ const prevDays=new Date(y,m,0).getDate();
+ const items=allItems().filter(i=>i.due);
+ const byDay={};
+ items.forEach(i=>{(byDay[i.due]=byDay[i.due]||[]).push(i);});
+ let cells='';
+ for(let i=start-1;i>=0;i--)cells+=`<div class="cday out">${prevDays-i}</div>`;
+ for(let d=1;d<=days;d++){
+  const iso=`${y}-${pad(m+1)}-${pad(d)}`;
+  const list=(byDay[iso]||[]).filter(i=>!i.done);
+  const dots=list.slice(0,3).map(i=>`<i style="background:${(CATS[i.cat]||CATS.other).color}"></i>`).join('');
+  cells+=`<button class="cday ${iso===today()?'today':''} ${iso===selDay?'sel':''}" data-day="${iso}">
+   <span>${d}</span><span class="dots">${dots}</span></button>`;
+ }
+ const dayList=sortItems((byDay[selDay]||[]));
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">ปฏิทินครอบครัว</div><h1>ดูทั้งเดือนในหน้าเดียว</h1></div></div>
+ <div class="card">
+  <div class="calhead">
+   <button class="calnav" id="pm">‹</button>
+   <b>${TH_MFULL[m]} ${y+543}</b>
+   <button class="calnav" id="nm">›</button>
+  </div>
+  <div class="calgrid">${TH_DOW.map(d=>`<div class="cdow">${d}</div>`).join('')}${cells}</div>
+ </div>
+ <div class="sec">
+  <div class="sec-h"><h2>${fmtD(selDay)}</h2><button id="addOnDay">＋ เพิ่มวันนี้</button></div>
+  <div class="itemlist">${dayList.length?dayList.map(itemRow).join('')
+   :`<div class="card empty"><span class="em">🗓️</span>วันนี้ยังไม่มีรายการ</div>`}</div>
+ </div>`;
+}
+
+function viewFamily(){
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">คนในบ้าน</div><h1>ครอบครัวของเรา</h1></div>
+  <button class="icobtn" id="addMem2">＋</button></div>
+ ${S.members.length?S.members.map(m=>{
+  const mine=allItems().filter(i=>i.who===m.id&&!i.done);
+  const bd=m.birth?diffDays(birthdayItems().find(b=>b.who===m.id)?.due):null;
+  return `<div class="card" style="margin-bottom:11px">
+   <div style="display:flex;gap:13px;align-items:center">
+    <div style="font-size:34px">${m.avatar||'🧑'}</div>
+    <div style="flex:1;min-width:0">
+     <div class="mitr" style="font-size:16px">${escapeHtml(m.name)} ${m.rel?`<span style="font-size:12px;color:var(--muted)">(${m.rel})</span>`:''}</div>
+     <div style="font-size:12px;color:var(--muted);margin-top:2px">
+      ${m.birth?`🎂 ${fmtD(m.birth)}${bd!==null?` · อีก ${bd} วัน`:''}`:'ยังไม่ได้ใส่วันเกิด'}
+     </div>
+     <div style="font-size:12px;color:var(--muted);margin-top:2px">📌 ดูแลอยู่ ${mine.length} เรื่อง</div>
+     ${m.allergy?`<div style="font-size:12px;color:var(--red);margin-top:3px">⚠️ แพ้ยา: ${escapeHtml(m.allergy)}</div>`:''}
+    </div>
+    <button class="btn ghost sm" style="width:auto;padding:9px 13px" data-edit="${m.id}">แก้ไข</button>
+   </div>
+   ${mine.length?`<div class="itemlist" style="margin-top:11px">${mine.slice(0,3).map(itemRow).join('')}</div>`:''}
+  </div>`;
+ }).join(''):`<div class="card empty"><span class="em">👨‍👩‍👧‍👦</span>ยังไม่มีสมาชิก<br>เพิ่มคนในบ้านเพื่อเริ่มใช้งาน</div>`}
+ <button class="btn" id="addMem3" style="margin-top:6px">＋ เพิ่มสมาชิกครอบครัว</button>
+ <button class="btn ghost sm" id="emCard" style="margin-top:9px">🆘 สร้างบัตรข้อมูลฉุกเฉิน</button>`;
+}
+
+function viewMoney(){
+ const withAmt=S.items.filter(i=>i.amount);
+ const inc=withAmt.filter(i=>i.flow==='in'&&i.done).reduce((s,i)=>s+Number(i.amount),0);
+ const exp=withAmt.filter(i=>i.flow!=='in'&&i.done).reduce((s,i)=>s+Number(i.amount),0);
+ const pending=sortItems(withAmt.filter(i=>!i.done));
+ const pendSum=pending.filter(i=>i.flow!=='in').reduce((s,i)=>s+Number(i.amount),0);
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">การเงินครอบครัว</div><h1>เงินเข้า–ออกแบบง่าย</h1></div></div>
+ <div class="fin3">
+  <div class="fin"><div class="l">รายรับที่รับแล้ว</div><div class="v num" style="color:var(--green)">+${money(inc)}</div></div>
+  <div class="fin"><div class="l">รายจ่ายที่จ่ายแล้ว</div><div class="v num" style="color:var(--red)">−${money(exp)}</div></div>
+  <div class="fin"><div class="l">คงเหลือ</div><div class="v num">${money(inc-exp)}</div></div>
+ </div>
+ <div class="card" style="margin-bottom:14px">
+  <div style="font-size:12px;color:var(--muted)">ยังไม่ได้จ่าย รวมทั้งหมด</div>
+  <div class="num" style="font-size:24px;color:var(--amber);margin-top:3px">${money(pendSum)} บาท</div>
+ </div>
+ <div class="sec-h"><h2>รายการที่ยังไม่ได้จ่าย</h2><button data-add="money">＋ เพิ่ม</button></div>
+ <div class="itemlist">${pending.length?pending.map(itemRow).join('')
+  :`<div class="card empty"><span class="em">💰</span>ยังไม่มีรายการเงิน<br>เพิ่มค่าไฟ ค่าน้ำ ค่างวด ไว้กันลืมได้</div>`}</div>
+ <div class="note">ระบบนี้ตั้งใจให้ง่ายที่สุด ใช้กันลืมจ่าย ไม่ใช่โปรแกรมบัญชี — ตัวเลข "จ่ายแล้ว" จะนับเมื่อคุณติ๊กว่าเรื่องนั้นเสร็จแล้ว</div>`;
+}
+
+function viewDocs(){
+ const docs=sortItems(allItems().filter(i=>i.cat==='doc'||i.cat==='car'));
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">เอกสารสำคัญ</div><h1>กันลืมวันหมดอายุ</h1></div></div>
+ <div class="sec-h"><h2>เอกสารที่บันทึกไว้</h2><button data-add="doc">＋ เพิ่ม</button></div>
+ <div class="itemlist">${docs.length?docs.map(itemRow).join('')
+  :`<div class="card empty"><span class="em">📄</span>ยังไม่มีเอกสาร<br>เช่น บัตรประชาชน พาสปอร์ต ประกันรถ พ.ร.บ. ใบขับขี่</div>`}</div>
+ <div class="note">💡 แนะนำให้บันทึกแค่ <b>ชื่อเอกสารกับวันหมดอายุ</b> พอ — เลขบัตรหรือเลขกรมธรรม์ใส่ได้ถ้าต้องการ ข้อมูลเก็บอยู่ในเครื่องนี้เท่านั้น แต่ถ้าเครื่องหายและไม่ได้ล็อกหน้าจอ คนอื่นก็เปิดดูได้ ควรตั้งรหัสล็อกในหน้าตั้งค่า</div>`;
+}
+
+function viewSettings(){
+ const total=S.items.length;
+ return `
+ <div class="topbar"><div class="grow"><div class="hello">ตั้งค่า</div><h1>ดูแลข้อมูลของครอบครัว</h1></div></div>
+ <div class="card" style="margin-bottom:12px">
+  <div class="f"><label>ชื่อครอบครัว</label><input id="s_fam" value="${escapeHtml(S.settings.familyName||'')}" placeholder="เช่น บ้านพันธุ์สุข"></div>
+  <div class="f"><label>เรียกฉันว่า</label><input id="s_me" value="${escapeHtml(S.settings.me||'')}" placeholder="เช่น พ่อ"></div>
+  <button class="btn sm" id="s_save">บันทึก</button>
+  <button class="btn ghost sm" id="s_demo" style="margin-top:9px">👀 ใส่ข้อมูลตัวอย่างเพื่อทดลอง</button>
+ </div>
+
+ <div class="card" style="margin-bottom:12px">
+  <h3 style="font-size:15px;margin-bottom:6px">🔔 การแจ้งเตือน</h3>
+  <p class="sub" style="margin-bottom:10px">สถานะตอนนี้: <b>${escapeHtml(pushPermissionStatus())}</b></p>
+  <button class="btn sm" id="s_notify">🔔 เปิดการแจ้งเตือนบนมือถือ</button>
+  <button class="btn ghost sm" id="s_testpush" style="margin-top:9px">🧪 ทดสอบแจ้งเตือนจริง</button>
+  <button class="btn ghost sm" id="s_pushstatus" style="margin-top:9px">🔎 ตรวจระบบ Push (เซิร์ฟเวอร์)</button>
+  <button class="btn ghost sm" id="s_diag" style="margin-top:9px">📱 ตรวจเครื่องนี้ — ทำไมแจ้งเตือนไม่ขึ้น</button>
+  <div id="pushHelp" class="note safe" style="margin-top:10px">เมื่อเปิดสำเร็จ Family OS จะส่ง Push ตามวันครบกำหนด แม้ปิดหน้าเว็บแล้ว สำหรับ iPhone ต้องเพิ่ม Family OS ลงหน้าจอโฮมและเปิดจากไอคอนนั้นก่อน</div>
+  <button class="btn ghost sm" id="s_ics" style="margin-top:11px">📅 ส่งรายการเข้าปฏิทินมือถือ</button>
+ </div>
+
+ <div class="card" style="margin-bottom:12px">
+  <h3 style="font-size:15px;margin-bottom:6px">🔒 ล็อกหน้าจอด้วยรหัส</h3>
+  <p class="sub" style="margin-bottom:10px">${S.settings.pin?'ตั้งรหัสไว้แล้ว':'ยังไม่ได้ตั้งรหัส'} — ป้องกันคนอื่นหยิบมือถือไปเปิดดู</p>
+  <div class="row2">
+   <button class="btn sm" id="s_pin">${S.settings.pin?'เปลี่ยนรหัส':'ตั้งรหัส 4 หลัก'}</button>
+   ${S.settings.pin?`<button class="btn ghost sm" id="s_pinoff">ปิดการล็อก</button>`:''}
+  </div>
+  <div class="note">รหัสนี้ช่วยกันคนหยิบเครื่องไปเปิดดูเฉย ๆ ไม่ใช่การเข้ารหัสข้อมูลระดับสูง ถ้ามีข้อมูลที่อ่อนไหวมากจริง ๆ ไม่ควรเก็บไว้ในเครื่องใด ๆ</div>
+ </div>
+
+ <div class="card" style="margin-bottom:12px">
+  <h3 style="font-size:15px;margin-bottom:6px">💾 สำรองข้อมูล</h3>
+  <p class="sub" style="margin-bottom:10px">มี ${total} รายการ · ${S.members.length} สมาชิก</p>
+  <div class="row2">
+   <button class="btn sm" id="s_export">⬇️ บันทึกไฟล์สำรอง</button>
+   <button class="btn ghost sm" id="s_import">⬆️ กู้คืนจากไฟล์</button>
+  </div>
+  <input type="file" id="s_file" accept=".json,application/json" style="display:none">
+  <div class="note warn">⚠️ <b>สำคัญมาก</b> ข้อมูลเก็บอยู่ในเบราว์เซอร์เครื่องนี้เท่านั้น ถ้าล้างข้อมูลเบราว์เซอร์ เปลี่ยนเครื่อง หรือไม่ได้เปิดเว็บนี้นานหลายสัปดาห์ (โดยเฉพาะบน iPhone) ข้อมูลอาจหายได้<br><br><b>ควรกดบันทึกไฟล์สำรองเดือนละครั้ง</b> แล้วเก็บไฟล์ไว้ในคลาวด์หรือส่งเข้าไลน์ตัวเอง</div>
+ </div>
+
+ <div class="card">
+  <h3 style="font-size:15px;margin-bottom:6px">🗑️ ล้างข้อมูลทั้งหมด</h3>
+  <p class="sub" style="margin-bottom:10px">ลบทุกอย่างในเครื่องนี้ กู้คืนไม่ได้</p>
+  <button class="btn danger sm" id="s_wipe">ล้างข้อมูลทั้งหมด</button>
+ </div>
+
+ <div class="note safe" style="margin-bottom:20px">🔒 ข้อมูลครอบครัวของคุณไม่เคยถูกส่งออกจากเครื่องนี้ ไม่มีเซิร์ฟเวอร์ ไม่มีบัญชีผู้ใช้ ไม่มีใครเห็นนอกจากคุณ</div>`;
+}
+
+/* ══════════ บัตรฉุกเฉิน ══════════ */
+function emergencyCard(){
+ if(!S.members.length){toast('ℹ️','ยังไม่มีสมาชิก','เพิ่มสมาชิกก่อนจึงจะสร้างบัตรได้');return;}
+ const rows=S.members.map(m=>`
+  <div class="ec">
+   <div class="ec-h"><span class="ec-av">${m.avatar||'🧑'}</span>
+    <div><b>${escapeHtml(m.name)}</b><small>${escapeHtml(m.rel||'')}${m.birth?' · เกิด '+fmtD(m.birth):''}</small></div>
+    ${m.blood?`<span class="ec-blood">${escapeHtml(m.blood)}</span>`:''}</div>
+   ${m.allergy?`<div class="ec-r ec-alert"><span>⚠️ แพ้ยา</span><b>${escapeHtml(m.allergy)}</b></div>`:''}
+   ${m.chronic?`<div class="ec-r"><span>โรคประจำตัว</span><b>${escapeHtml(m.chronic)}</b></div>`:''}
+   ${m.med?`<div class="ec-r"><span>ยาที่กินประจำ</span><b>${escapeHtml(m.med)}</b></div>`:''}
+   ${m.hospital?`<div class="ec-r"><span>รพ. / สิทธิรักษา</span><b>${escapeHtml(m.hospital)}</b></div>`:''}
+   ${m.emergency?`<div class="ec-r"><span>ติดต่อฉุกเฉิน</span><b>${escapeHtml(m.emergency)}</b></div>`:''}
+  </div>`).join('');
+ const w=window.open('','_blank');
+ if(!w){toast('⚠️','เบราว์เซอร์บล็อกหน้าต่างใหม่','อนุญาต pop-up แล้วลองอีกครั้ง');return;}
+ w.document.write(`<!DOCTYPE html><html lang="th"><head><meta charset="utf-8">
+ <title>บัตรข้อมูลฉุกเฉิน — ${escapeHtml(S.settings.familyName||'ครอบครัว')}</title>
+ <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@500;600&family=Anuphan:wght@400;600;700&display=swap" rel="stylesheet">
+ <style>
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:'Anuphan',sans-serif;background:#FFF8F0;color:#3E2E23;padding:24px}
+ h1{font-family:'Mitr',sans-serif;font-size:22px;margin-bottom:4px}
+ .lead{font-size:13px;color:#8B7566;margin-bottom:18px}
+ .ec{background:#fff;border:2px solid #F0E2D4;border-radius:16px;padding:15px;margin-bottom:12px;page-break-inside:avoid}
+ .ec-h{display:flex;align-items:center;gap:11px;padding-bottom:10px;border-bottom:1px solid #F0E2D4;margin-bottom:9px}
+ .ec-av{font-size:28px}
+ .ec-h b{font-family:'Mitr',sans-serif;font-size:16px;display:block}
+ .ec-h small{font-size:12px;color:#8B7566}
+ .ec-blood{margin-left:auto;background:#FDEDEA;color:#E0553F;font-weight:700;padding:6px 13px;border-radius:99px;font-size:14px}
+ .ec-r{display:flex;gap:10px;font-size:13.5px;padding:5px 0;line-height:1.6}
+ .ec-r span{color:#8B7566;min-width:118px;flex-shrink:0}
+ .ec-r b{font-weight:600}
+ .ec-alert{background:#FDEDEA;margin:5px -6px;padding:8px 6px;border-radius:9px}
+ .ec-alert span,.ec-alert b{color:#C0392B}
+ .foot{font-size:11.5px;color:#8B7566;line-height:1.7;margin-top:16px;border-top:1px solid #F0E2D4;padding-top:12px}
+ .pbtn{position:fixed;right:18px;bottom:18px;background:#FF9A56;color:#fff;border:0;border-radius:14px;padding:14px 22px;font-family:'Mitr',sans-serif;font-size:15px;box-shadow:0 10px 24px rgba(255,154,86,.4);cursor:pointer}
+ @media print{.pbtn{display:none}body{background:#fff;padding:0}}
+ </style></head><body>
+ <h1>🆘 บัตรข้อมูลฉุกเฉิน</h1>
+ <p class="lead">${escapeHtml(S.settings.familyName||'ครอบครัวของเรา')} · พิมพ์แล้วพับใส่กระเป๋าสตางค์ หรือแปะไว้ที่ตู้เย็น</p>
+ ${rows}
+ <p class="foot">ข้อมูลนี้จัดทำโดยสมาชิกในครอบครัวเอง ไม่ใช่เอกสารทางการแพทย์ · เจ้าหน้าที่ควรใช้เป็นข้อมูลประกอบเท่านั้น และตรวจสอบซ้ำเมื่อทำได้<br>อัปเดตล่าสุด ${fmtD(today())}</p>
+ <button class="pbtn" onclick="window.print()">🖨️ พิมพ์ / บันทึกเป็น PDF</button>
+ </body></html>`);
+ w.document.close();
+}
+
+/* ══════════ ส่งออกปฏิทิน .ics ══════════ */
+function exportICS(){
+ const items=allItems().filter(i=>!i.done&&i.due);
+ if(!items.length){toast('ℹ️','ยังไม่มีรายการที่มีวันครบกำหนด','');return;}
+ const esc=s=>String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\n/g,'\\n');
+ const stamp=new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+ let out=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//FamilyOS//TH','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+ items.forEach(it=>{
+  const d=it.due.replace(/-/g,'');
+  const c=CATS[it.cat]||CATS.other;
+  const rem=(it.remind&&it.remind.length)?it.remind:[1];
+  out.push('BEGIN:VEVENT',`UID:${it.id}@familyos`,`DTSTAMP:${stamp}`);
+  if(it.time){
+   const t=it.time.replace(':','')+'00';
+   out.push(`DTSTART;TZID=Asia/Bangkok:${d}T${t}`);
+  } else {
+   const nd=parseD(it.due);nd.setDate(nd.getDate()+1);
+   out.push(`DTSTART;VALUE=DATE:${d}`,`DTEND;VALUE=DATE:${toISO(nd).replace(/-/g,'')}`);
+  }
+  out.push(`SUMMARY:${esc(c.em+' '+it.title)}`);
+  const who=memberOf(it.who);
+  out.push(`DESCRIPTION:${esc([it.note,who?'ผู้ดูแล: '+who.name:'',it.amount?'จำนวนเงิน: '+money(it.amount)+' บาท':''].filter(Boolean).join('\n'))}`);
+  if(it.repeat&&it.repeat!=='none'){
+   const F={daily:'DAILY',weekly:'WEEKLY',monthly:'MONTHLY',yearly:'YEARLY'}[it.repeat];
+   out.push(`RRULE:FREQ=${F}`);
+  }
+  rem.forEach(r=>out.push('BEGIN:VALARM',`TRIGGER:-P${r}D`,'ACTION:DISPLAY',`DESCRIPTION:${esc(it.title)}`,'END:VALARM'));
+  out.push('END:VEVENT');
+ });
+ out.push('END:VCALENDAR');
+ dl(new Blob([out.join('\r\n')],{type:'text/calendar;charset=utf-8'}),'family-os.ics');
+ toast('📅','สร้างไฟล์ปฏิทินแล้ว','เปิดไฟล์นี้ในมือถือเพื่อเพิ่มเข้าปฏิทิน แล้วปฏิทินจะเตือนคุณเอง');
+}
+function dl(blob,name){
+ const u=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(u),5000);
+}
+
+/* ══════════ ล็อกด้วยรหัส ══════════ */
+function pinPad(title,onDone){
+ let buf='';
+ const root=$('#lockRoot');
+ const draw=()=>{$$('.pindot',root).forEach((d,i)=>d.classList.toggle('on',i<buf.length));};
+ root.innerHTML=`<div class="lock">
+  <img src="icon-192.png" alt="">
+  <div class="mitr" style="font-size:18px">${title}</div>
+  <div class="pinrow">${[0,1,2,3].map(()=>'<span class="pindot"></span>').join('')}</div>
+  <div class="keys">${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="key" data-k="${n}">${n}</button>`).join('')}
+   <button class="key" data-k="c">⌫</button><button class="key" data-k="0">0</button><span></span></div>
+ </div>`;
+ $$('.key',root).forEach(b=>b.onclick=()=>{
+  const k=b.dataset.k;
+  if(k==='c')buf=buf.slice(0,-1);
+  else if(buf.length<4)buf+=k;
+  draw();
+  if(buf.length===4)setTimeout(()=>onDone(buf,()=>{buf='';draw();}),140);
+ });
+}
+function lockScreen(){
+ pinPad('ใส่รหัสเพื่อเข้าใช้งาน',(v,reset)=>{
+  if(v===S.settings.pin){$('#lockRoot').innerHTML='';}
+  else{toast('❌','รหัสไม่ถูกต้อง','');reset();}
+ });
+}
+
+/* ══════════ ข้อมูลตัวอย่าง (เดโม่) ══════════ */
+function demoData(){
+ const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return toISO(d);};
+ const Y=(m,dd)=>{const y=new Date().getFullYear();return `${y-m}-${dd}`;};
+ const M=[
+  {id:'dm1',name:'สมชาย',rel:'พ่อ',avatar:'👨',birth:Y(46,'03-14'),blood:'O Rh+',chronic:'ความดันโลหิตสูง',
+   allergy:'',med:'ยาลดความดัน เช้า 1 เม็ด',hospital:'รพ.ประจำอำเภอ · บัตรทอง',emergency:'สุนีย์ (ภรรยา) 08x-xxx-xxxx'},
+  {id:'dm2',name:'สุนีย์',rel:'แม่',avatar:'👩',birth:Y(43,'09-02'),blood:'B Rh+',chronic:'',
+   allergy:'ยาซัลฟา',med:'',hospital:'รพ.ประจำอำเภอ · ประกันสังคม',emergency:'สมชาย (สามี) 08x-xxx-xxxx'},
+  {id:'dm3',name:'น้องปอ',rel:'ลูก',avatar:'👦',birth:Y(11,'11-08'),blood:'O Rh+',chronic:'หอบหืด (อาการเบา)',
+   allergy:'',med:'ยาพ่นเวลามีอาการ',hospital:'รพ.เด็ก',emergency:'แม่สุนีย์ 08x-xxx-xxxx'},
+  {id:'dm4',name:'ยายบุญมี',rel:'ยาย',avatar:'👵',birth:Y(74,'05-21'),blood:'A Rh+',chronic:'เบาหวาน · ข้อเข่าเสื่อม',
+   allergy:'เพนนิซิลลิน',med:'ยาเบาหวาน เช้า-เย็น',hospital:'รพ.ศูนย์ · บัตรทอง',emergency:'สมชาย (ลูกชาย) 08x-xxx-xxxx'},
+ ];
+ const I=[
+  {cat:'money',title:'ค่าไฟฟ้าเดือนนี้',note:'ยังไม่ได้จ่าย เลยกำหนดแล้ว',due:D(-2),who:'dm1',prio:'high',repeat:'monthly',remind:[3,1],amount:1840,flow:'out'},
+  {cat:'health',title:'พายายไปหาหมอตามนัด',note:'รพ.ศูนย์ ตึกผู้ป่วยนอก ชั้น 3 · เอาบัตรทองกับสมุดยาไปด้วย',due:D(1),time:'09:00',who:'dm1',prio:'critical',repeat:'none',remind:[7,3,1]},
+  {cat:'school',title:'ประชุมผู้ปกครองน้องปอ',note:'ห้อง ป.5/2 อาคาร 2',due:D(3),time:'13:30',who:'dm2',prio:'high',repeat:'none',remind:[7,1]},
+  {cat:'money',title:'ค่างวดบ้าน',due:D(7),who:'dm1',prio:'high',repeat:'monthly',remind:[7,3],amount:9800,flow:'out'},
+  {cat:'school',title:'ค่าเทอมน้องปอ',note:'จ่ายที่ธนาคารหรือแอปโรงเรียน',due:D(7),who:'dm2',prio:'high',repeat:'none',remind:[14,7,3],amount:12500,flow:'out'},
+  {cat:'car',title:'ต่อ พ.ร.บ. + ประกันรถ',note:'ทะเบียน กข 1234 · ใช้สำเนาทะเบียนรถกับบัตรประชาชน',due:D(12),who:'dm1',prio:'high',repeat:'yearly',remind:[30,14,7]},
+  {cat:'home',title:'ล้างแอร์ห้องนอน',due:D(20),who:'dm1',prio:'normal',repeat:'yearly',remind:[7]},
+  {cat:'health',title:'ตรวจสุขภาพประจำปีของแม่',due:D(25),who:'dm2',prio:'normal',repeat:'yearly',remind:[14,7]},
+  {cat:'doc',title:'บัตรประชาชนพ่อหมดอายุ',note:'ต่อที่ที่ว่าการอำเภอ ใช้บัตรเดิม + ทะเบียนบ้าน',due:D(45),who:'dm1',prio:'high',repeat:'none',remind:[30,14,7]},
+  {cat:'health',title:'พายายไปกายภาพบำบัด',note:'ทุกสัปดาห์ ที่ รพ.ศูนย์',due:D(4),time:'10:00',who:'dm1',prio:'normal',repeat:'weekly',remind:[1]},
+  {cat:'love',title:'โทรหายายทุกเย็นวันอาทิตย์',note:'แค่โทรถามว่ากินข้าวหรือยัง ก็มีความหมายกับท่านมาก',due:D(5),who:'dm3',prio:'normal',repeat:'weekly',remind:[1]},
+  {cat:'money',title:'ค่าอินเทอร์เน็ตบ้าน',due:D(9),who:'dm1',prio:'normal',repeat:'monthly',remind:[3],amount:599,flow:'out'},
+  {cat:'money',title:'เงินเดือนเข้า',due:D(-1),who:'dm1',prio:'normal',repeat:'monthly',remind:[1],amount:28000,flow:'in',done:true},
+  {cat:'doc',title:'ต่ออายุใบขับขี่',note:'อบรมออนไลน์ล่วงหน้าได้ที่กรมการขนส่ง',due:D(90),who:'dm2',prio:'normal',repeat:'none',remind:[30,14]},
+ ];
+ S.members=M.map(m=>Object.assign({},m));
+ S.items=I.map((x,i)=>Object.assign({id:'di'+i,done:false,created:today()},x));
+ S.settings.familyName='บ้านพันธุ์สุข (ตัวอย่าง)';
+ S.settings.me='พ่อ';
+ S.settings.onboarded=true;
+ S.settings.demo=true;
+ save();
+}
+function loadDemo(){
+ demoData();closeSheet();view='home';render();
+ toast('🎉','ใส่ข้อมูลตัวอย่างแล้ว','ลองกดดูได้ทุกปุ่ม · เมื่อพร้อมใช้จริงไปที่ ตั้งค่า แล้วกดล้างข้อมูลทั้งหมด');
+}
+
+/* ══════════ Onboarding ══════════ */
+function onboard(){
+ openSheet(`
+  <h3>ยินดีต้อนรับสู่ Family OS 🏠</h3>
+  <p class="sub">ที่เดียวสำหรับเรื่องสำคัญของคนที่คุณรัก — นัดหมอ วันเกิด เอกสารหมดอายุ ค่าใช้จ่าย และเรื่องที่ไม่ควรลืม</p>
+  <div class="f"><label>ครอบครัวนี้ชื่อว่า</label><input id="ob_fam" placeholder="เช่น บ้านพันธุ์สุข"></div>
+  <div class="f"><label>ให้เรียกคุณว่า</label><input id="ob_me" placeholder="เช่น พ่อ / แม่ / ชื่อเล่น"></div>
+  <div class="note safe">🔒 ข้อมูลทั้งหมดเก็บอยู่ในเครื่องนี้เท่านั้น ไม่ถูกส่งขึ้นเซิร์ฟเวอร์ ไม่ต้องสมัครสมาชิก</div>
+  <button class="btn" id="ob_go" style="margin-top:14px">เริ่มใช้งานจากศูนย์</button>
+  <button class="btn ghost sm" id="ob_demo" style="margin-top:9px">👀 ขอลองดูตัวอย่างก่อน</button>
+ `,()=>{
+  $('#ob_demo').onclick=loadDemo;
+  $('#ob_go').onclick=()=>{
+   S.settings.familyName=$('#ob_fam').value.trim();
+   S.settings.me=$('#ob_me').value.trim();
+   S.settings.onboarded=true;save();closeSheet();render();
+   setTimeout(()=>toast('👋','เริ่มจากเพิ่มคนในบ้านก่อนก็ได้','กดปุ่ม ＋ เพิ่ม ที่แถวรูปด้านบน'),500);
+  };
+ });
+}
+
+/* ══════════ render ══════════ */
+const NAV=[['home','🏠','หน้าแรก'],['calendar','📅','ปฏิทิน'],['family','👨‍👩‍👧‍👦','ครอบครัว'],
+ ['money','💰','การเงิน'],['docs','📄','เอกสาร'],['settings','⚙️','ตั้งค่า']];
+let listFilter='all';
+
+function render(){
+ keepY=window.scrollY;
+ const m=$('#main');
+ if(view==='home')m.innerHTML=viewHome();
+ else if(view==='list')m.innerHTML=viewList(listFilter);
+ else if(view==='calendar')m.innerHTML=viewCalendar();
+ else if(view==='family')m.innerHTML=viewFamily();
+ else if(view==='money')m.innerHTML=viewMoney();
+ else if(view==='docs')m.innerHTML=viewDocs();
+ else m.innerHTML=viewSettings();
+
+ $('#side').innerHTML=`
+  <div class="sidelogo"><img src="icon-192.png" alt=""><div>
+   <b>Family OS</b><small>${escapeHtml(S.settings.familyName||'ครอบครัวของเรา')}</small></div></div>
+  ${NAV.map(([k,i,t])=>`<button class="navbtn ${view===k?'on':''}" data-nav="${k}"><span class="i">${i}</span>${t}</button>`).join('')}`;
+ $('#bnav').innerHTML=NAV.slice(0,5).map(([k,i,t])=>
+  `<button class="bn ${view===k?'on':''}" data-nav="${k}"><span class="i">${i}</span>${t}</button>`).join('')
+  +`<button class="bn ${view==='settings'?'on':''}" data-nav="settings"><span class="i">⚙️</span>ตั้งค่า</button>`;
+
+ bindAll();
+ // เลื่อนขึ้นบนสุดเฉพาะตอนเปลี่ยนหน้า ถ้าอยู่หน้าเดิมให้คงตำแหน่งเดิมไว้
+ if(view!==lastView){window.scrollTo({top:0,behavior:'instant'});lastView=view;}
+ else if(typeof keepY==='number'){window.scrollTo({top:keepY,behavior:'instant'});}
+}
+let keepY=null;
+
+function bindAll(){
+ $$('[data-nav]').forEach(b=>b.onclick=()=>{view=b.dataset.nav;render();});
+ $$('[data-add]').forEach(b=>b.onclick=()=>itemForm(null,{cat:b.dataset.add,flow:b.dataset.add==='money'?'out':'out'}));
+ $$('[data-mem]').forEach(b=>b.onclick=()=>{const m=memberOf(b.dataset.mem);if(m)memberForm(m);});
+ $$('[data-edit]').forEach(b=>b.onclick=()=>{const m=memberOf(b.dataset.edit);if(m)memberForm(m);});
+ $$('[data-go]').forEach(b=>b.onclick=()=>{view='list';listFilter=b.dataset.go;render();});
+ $$('[data-f]').forEach(b=>b.onclick=()=>{listFilter=b.dataset.f;render();});
+ const ed=$('#emptyDemo');if(ed)ed.onclick=loadDemo;
+ const em=$('#emptyMem');if(em)em.onclick=()=>memberForm(null);
+ ['addMem','addMem2','addMem3','qMem'].forEach(id=>{const e=$('#'+id);if(e)e.onclick=()=>memberForm(null);});
+ ['qCard','emCard'].forEach(id=>{const e=$('#'+id);if(e)e.onclick=emergencyCard;});
+ bindItems($('#main'));
+
+ const bell=$('#btnBell');
+ if(bell)bell.onclick=()=>{
+  const act=allItems().filter(i=>!i.done&&i.due);
+  const urgent=sortItems(act).filter(i=>['over','today','tmr','w'].includes(statusOf(i).k)).slice(0,6);
+  openSheet(`<h3>🔔 การแจ้งเตือน</h3><p class="sub">เรื่องที่ควรจัดการก่อน</p>
+   <div class="itemlist">${urgent.length?urgent.map(itemRow).join(''):'<div class="card empty"><span class="em">🌿</span>ตอนนี้ยังไม่มีอะไรเร่งด่วน</div>'}</div>
+   <button class="btn ghost sm" id="nClose" style="margin-top:13px">ปิด</button>`,()=>{
+   $('#nClose').onclick=closeSheet;bindItems($('#sht'));
+  });
+ };
+
+ if(view==='calendar'){
+  $('#pm').onclick=()=>{calCursor=new Date(calCursor.getFullYear(),calCursor.getMonth()-1,1);render();};
+  $('#nm').onclick=()=>{calCursor=new Date(calCursor.getFullYear(),calCursor.getMonth()+1,1);render();};
+  $$('[data-day]').forEach(b=>b.onclick=()=>{selDay=b.dataset.day;render();});
+  $('#addOnDay').onclick=()=>itemForm(null,{due:selDay});
+ }
+
+ if(view==='settings'){
+  $('#s_save').onclick=()=>{S.settings.familyName=$('#s_fam').value.trim();S.settings.me=$('#s_me').value.trim();
+   save();render();toast('✅','บันทึกแล้ว','');};
+  $('#s_notify').onclick=function(){
+    /* ขออนุญาตทันทีในจังหวะกดปุ่ม (ข้อบังคับของ iOS) แล้วค่อยทำงานที่เหลือ */
+    requestNotifyPermissionNow().then(async p=>{ const ok=await askNotify(p); if(ok)render(); else render(); });
+   };
+  $('#s_testpush').onclick=testPush;
+  $('#s_pushstatus').onclick=async()=>{if(await checkPushServer())toast('✅','ระบบ Push พร้อมใช้งาน','VAPID และ Netlify Function ผ่านแล้ว');};
+  const _dg=$('#s_diag'); if(_dg)_dg.onclick=showPushDiagnostics;
+  $('#s_demo').onclick=()=>confirmBox('ใส่ข้อมูลตัวอย่าง?','ข้อมูลปัจจุบันจะถูกแทนที่ทั้งหมด ควรกดบันทึกไฟล์สำรองก่อนถ้ามีข้อมูลจริงอยู่แล้ว',loadDemo,'ใส่ตัวอย่าง');
+  $('#s_ics').onclick=exportICS;
+  $('#s_export').onclick=()=>{
+   dl(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}),`familyos-backup-${today()}.json`);
+   toast('💾','บันทึกไฟล์สำรองแล้ว','เก็บไฟล์นี้ไว้ในคลาวด์หรือส่งเข้าไลน์ตัวเอง');
+  };
+  $('#s_import').onclick=()=>$('#s_file').click();
+  $('#s_file').onchange=async e=>{
+   const f=e.target.files[0];if(!f)return;
+   try{
+    const d=JSON.parse(await f.text());
+    if(!d||!Array.isArray(d.items))throw new Error('ไฟล์ไม่ถูกต้อง');
+    confirmBox('กู้คืนข้อมูล?','ข้อมูลปัจจุบันจะถูกแทนที่ทั้งหมด',()=>{
+     S=Object.assign({members:[],items:[],settings:{}},d);save();render();
+     toast('✅','กู้คืนข้อมูลเรียบร้อย',`${S.items.length} รายการ · ${S.members.length} สมาชิก`);
+    },'กู้คืน');
+   }catch(err){toast('❌','ไฟล์นี้ใช้ไม่ได้',err.message||'');}
+   e.target.value='';
+  };
+  $('#s_pin').onclick=()=>{
+   pinPad('ตั้งรหัส 4 หลัก',(v1,reset1)=>{
+    $('#lockRoot').innerHTML='';
+    pinPad('ใส่รหัสเดิมอีกครั้ง',(v2)=>{
+     $('#lockRoot').innerHTML='';
+     if(v1===v2){S.settings.pin=v1;save();render();toast('🔒','ตั้งรหัสเรียบร้อย','ครั้งต่อไปต้องใส่รหัสก่อนเข้าใช้');}
+     else toast('❌','รหัสไม่ตรงกัน','ลองใหม่อีกครั้ง');
+    });
+   });
+  };
+  const po=$('#s_pinoff');
+  if(po)po.onclick=()=>confirmBox('ปิดการล็อก?','ใครก็ตามที่ถือเครื่องนี้จะเปิดดูข้อมูลได้',()=>{
+   S.settings.pin='';save();render();toast('🔓','ปิดการล็อกแล้ว','');},'ปิดการล็อก');
+  $('#s_wipe').onclick=()=>confirmBox('ล้างข้อมูลทั้งหมด?','ทุกรายการและสมาชิกจะหายไป กู้คืนไม่ได้ ควรบันทึกไฟล์สำรองก่อน',()=>{
+   S={members:[],items:[],settings:{familyName:'',me:'',pin:'',notify:false,onboarded:true,demo:false},v:1};
+   save();render();toast('🗑️','ล้างข้อมูลแล้ว','');},'ล้างทั้งหมด');
+ }
+}
+
+/* ══════════ เริ่มทำงาน ══════════ */
+load();
+if(location.hash==='#settings')view='settings';
+try{notified=JSON.parse(localStorage.getItem(KEY+':notified')||'{}');}catch(e){notified={};}
+$('#fab').onclick=()=>itemForm(null,view==='calendar'?{due:selDay}:null);
+render();
+if(S.settings.pin)lockScreen();
+if(!S.settings.onboarded)setTimeout(onboard,350);
+setTimeout(checkReminders,1400);
+setInterval(checkReminders,1000*60*30);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)setTimeout(checkReminders,600);});
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+// เปิดจากเบราว์เซอร์ (ยังไม่ได้ติดตั้ง) -> ชวนติดตั้งเพื่อให้ดูเป็นแอปจริง
+if(!isStandalone()){
+ const bar=$('#installBar');
+ if(bar){
+  bar.style.display='flex';
+  const b=$('#installBtn');
+  if(b)b.onclick=async()=>{
+   if(deferred){deferred.prompt();try{await deferred.userChoice;}catch(e){} deferred=null;bar.style.display='none';}
+   else showInstallHelp();
+  };
+ }
+}
+</script>
+</body>
+</html>
